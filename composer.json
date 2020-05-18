@@ -1,5 +1,5 @@
 {
-  "name": "KharismaWardhana/php_qr_decoder",
+  "name": "kharisma-wardhana/php_qr_decoder",
   "type": "library",
   "description": "PHP QR code decoder / reader",
   "keywords": [
@@ -7,7 +7,7 @@
     "zxing",
     "barcode"
   ],
-  "homepage": "https://github.com/KharismaWardhana/php_qr_decoder/",
+  "homepage": "https://github.com/kharisma-wardhana/php_qr_decoder",
   "license": [
 	"MIT",
 	"Apache-2.0"
@@ -16,7 +16,7 @@
     {
       "name": "Kharisma Wardhana",
       "email": "kharisma.wardhana@spesolution.com",
-      "homepage": "https://github.com/KharismaWardhana",
+      "homepage": "https://github.com/kharisma-wardhana",
       "role": "Developer"
     }
   ],
