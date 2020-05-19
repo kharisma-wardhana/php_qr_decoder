@@ -58,7 +58,7 @@ final class QrReader
             if (!$im instanceof \Imagick) {
                 throw new \InvalidArgumentException('Invalid image source.');
             }
-            $im->scaleImage(100, 100, true);
+            $im->scaleImage(800, 800, true);
             $width  = $im->getImageWidth();
             $height = $im->getImageHeight();
             $source = new IMagickLuminanceSource($im, $width, $height);
@@ -66,7 +66,7 @@ final class QrReader
             if (!is_resource($im)) {
                 throw new \InvalidArgumentException('Invalid image source.');
             }
-            $im = imagescale($im, 100);
+            $im = imagescale($im, 800);
             $width  = imagesx($im);
             $height = imagesy($im);
             $source = new GDLuminanceSource($im, $width, $height);
@@ -76,22 +76,27 @@ final class QrReader
         $this->reader = new QRCodeReader();
     }
 
-    public function decode()
+    // public function decode()
+    public function decode($hints = null)
     {
         try {
-            $this->result = $this->reader->decode($this->bitmap);
+            // $this->result = $this->reader->decode($this->bitmap);
+            $this->result = $this->reader->decode($this->bitmap, $hints);
         } catch (NotFoundException $er) {
+            // var_dump("A");
             $this->result = false;
         } catch (FormatException $er) {
+            // var_dump("AB");
             $this->result = false;
         } catch (ChecksumException $er) {
+            // var_dump("ABC");
             $this->result = false;
         }
     }
 
-    public function text()
+    public function text($hints = null)
     {
-        $this->decode();
+        $this->decode($hints);
 
         if (method_exists($this->result, 'toString')) {
             return $this->result->toString();

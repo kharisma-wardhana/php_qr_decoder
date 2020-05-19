@@ -64,23 +64,23 @@ class QRCodeReader implements Reader
             $decoderResult = $this->decoder->decode($detectorResult->getBits(), $hints);
             $points        = $detectorResult->getPoints();
         }
-        $result = new Result($decoderResult->getText(), $decoderResult->getRawBytes(), $points, 'QR_CODE');//BarcodeFormat.QR_CODE
+        $result = new Result($decoderResult->getText(), $decoderResult->getRawBytes(), $points, 'QR_CODE'); //BarcodeFormat.QR_CODE
 
         $byteSegments = $decoderResult->getByteSegments();
         if ($byteSegments !== null) {
-            $result->putMetadata('BYTE_SEGMENTS', $byteSegments);//ResultMetadataType.BYTE_SEGMENTS
+            $result->putMetadata('BYTE_SEGMENTS', $byteSegments); //ResultMetadataType.BYTE_SEGMENTS
         }
         $ecLevel = $decoderResult->getECLevel();
         if ($ecLevel !== null) {
-            $result->putMetadata('ERROR_CORRECTION_LEVEL', $ecLevel);//ResultMetadataType.ERROR_CORRECTION_LEVEL
+            $result->putMetadata('ERROR_CORRECTION_LEVEL', $ecLevel); //ResultMetadataType.ERROR_CORRECTION_LEVEL
         }
         if ($decoderResult->hasStructuredAppend()) {
             $result->putMetadata(
-                'STRUCTURED_APPEND_SEQUENCE',//ResultMetadataType.STRUCTURED_APPEND_SEQUENCE
+                'STRUCTURED_APPEND_SEQUENCE', //ResultMetadataType.STRUCTURED_APPEND_SEQUENCE
                 $decoderResult->getStructuredAppendSequenceNumber()
             );
             $result->putMetadata(
-                'STRUCTURED_APPEND_PARITY',//ResultMetadataType.STRUCTURED_APPEND_PARITY
+                'STRUCTURED_APPEND_PARITY', //ResultMetadataType.STRUCTURED_APPEND_PARITY
                 $decoderResult->getStructuredAppendParity()
             );
         }
@@ -144,14 +144,14 @@ class QRCodeReader implements Reader
         // Push in the "border" by half the module width so that we start
         // sampling in the middle of the module. Just in case the image is a
         // little off, this will help recover.
-        $nudge = (int)($moduleSize / 2.0);// $nudge = (int) ($moduleSize / 2.0f);
+        $nudge = (int) ($moduleSize / 2.0); // $nudge = (int) ($moduleSize / 2.0f);
         $top   += $nudge;
         $left  += $nudge;
 
         // But careful that this does not sample off the edge
         // "right" is the farthest-right valid pixel location -- right+1 is not necessarily
         // This is positive by how much the inner x loop below would be too large
-        $nudgedTooFarRight = $left + (int)(($matrixWidth - 1) * $moduleSize) - $right;
+        $nudgedTooFarRight = $left + (int) (($matrixWidth - 1) * $moduleSize) - $right;
         if ($nudgedTooFarRight > 0) {
             if ($nudgedTooFarRight > $nudge) {
                 // Neither way fits; abort
@@ -160,7 +160,7 @@ class QRCodeReader implements Reader
             $left -= $nudgedTooFarRight;
         }
         // See logic above
-        $nudgedTooFarDown = $top + (int)(($matrixHeight - 1) * $moduleSize) - $bottom;
+        $nudgedTooFarDown = $top + (int) (($matrixHeight - 1) * $moduleSize) - $bottom;
         if ($nudgedTooFarDown > 0) {
             if ($nudgedTooFarDown > $nudge) {
                 // Neither way fits; abort
@@ -172,9 +172,9 @@ class QRCodeReader implements Reader
         // Now just read off the bits
         $bits = new BitMatrix($matrixWidth, $matrixHeight);
         for ($y = 0; $y < $matrixHeight; $y++) {
-            $iOffset = $top + (int)($y * $moduleSize);
+            $iOffset = $top + (int) ($y * $moduleSize);
             for ($x = 0; $x < $matrixWidth; $x++) {
-                if ($image->get($left + (int)($x * $moduleSize), $iOffset)) {
+                if ($image->get($left + (int) ($x * $moduleSize), $iOffset)) {
                     $bits->set($x, $y);
                 }
             }

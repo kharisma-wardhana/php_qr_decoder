@@ -33,7 +33,7 @@ use Zxing\ResultPoint;
 class FinderPatternFinder
 {
     protected static $MIN_SKIP = 3;
-    protected static $MAX_MODULES = 57; // 1 pixel/module times 3 modules/center
+    protected static $MAX_MODULES = 97; // 1 pixel/module times 3 modules/center
     private static $CENTER_QUORUM = 2; // support up to version 10 for mobile clients
     private $image;
     private $average;
@@ -52,14 +52,14 @@ class FinderPatternFinder
         $this->image = $image;
 
 
-        $this->possibleCenters      = [];//new ArrayList<>();
+        $this->possibleCenters      = []; //new ArrayList<>();
         $this->crossCheckStateCount = fill_array(0, 5, 0);
         $this->resultPointCallback  = $resultPointCallback;
     }
 
     final public function find($hints)
     {/*final FinderPatternInfo find(Map<DecodeHintType,?> hints) throws NotFoundException {*/
-        $tryHarder = true;//$hints != null && $hints['TRY_HARDER'];
+        $tryHarder   = $hints != null && $hints['TRY_HARDER'];
         $pureBarcode = $hints != null && $hints['PURE_BARCODE'];
         $maxI        = $this->image->getHeight();
         $maxJ        = $this->image->getWidth();
@@ -70,7 +70,7 @@ class FinderPatternFinder
         // image, and then account for the center being 3 modules in size. This gives the smallest
         // number of pixels the center could be, so skip this often. When trying harder, look for all
         // QR versions regardless of how dense they are.
-        $iSkip = (int)((3 * $maxI) / (4 * self::$MAX_MODULES));
+        $iSkip = (int) ((3 * $maxI) / (4 * self::$MAX_MODULES));
         if ($iSkip < self::$MIN_SKIP || $tryHarder) {
             $iSkip = self::$MIN_SKIP;
         }
@@ -100,7 +100,7 @@ class FinderPatternFinder
                                 if ($confirmed) {
                                     // Start examining every other line. Checking each line turned out to be too
                                     // expensive and didn't improve performance.
-                                    $iSkip = 3;
+                                    $iSkip = 2;
                                     if ($this->hasSkipped) {
                                         $done = $this->haveMultiplyConfirmedCenters();
                                     } else {
@@ -223,14 +223,15 @@ class FinderPatternFinder
         $stateCountTotal = $stateCount[0] + $stateCount[1] + $stateCount[2] + $stateCount[3] +
             $stateCount[4];
         $centerJ         = $this->centerFromEnd($stateCount, $j);
-        $centerI         = $this->crossCheckVertical($i, (int)($centerJ), $stateCount[2], $stateCountTotal);
+        $centerI         = $this->crossCheckVertical($i, (int) ($centerJ), $stateCount[2], $stateCountTotal);
         if (!is_nan($centerI)) {
             // Re-cross check
-            $centerJ = $this->crossCheckHorizontal((int)($centerJ), (int)($centerI), $stateCount[2], $stateCountTotal);
-            if (!is_nan($centerJ) &&
-                (!$pureBarcode || $this->crossCheckDiagonal((int)($centerI), (int)($centerJ), $stateCount[2], $stateCountTotal))
+            $centerJ = $this->crossCheckHorizontal((int) ($centerJ), (int) ($centerI), $stateCount[2], $stateCountTotal);
+            if (
+                !is_nan($centerJ) &&
+                (!$pureBarcode || $this->crossCheckDiagonal((int) ($centerI), (int) ($centerJ), $stateCount[2], $stateCountTotal))
             ) {
-                $estimatedModuleSize = (float)$stateCountTotal / 7.0;
+                $estimatedModuleSize = (float) $stateCountTotal / 7.0;
                 $found               = false;
                 for ($index = 0; $index < count($this->possibleCenters); $index++) {
                     $center = $this->possibleCenters[$index];
@@ -262,7 +263,7 @@ class FinderPatternFinder
      */
     private static function centerFromEnd($stateCount, $end)
     {
-        return (float)($end - $stateCount[4] - $stateCount[3]) - $stateCount[2] / 2.0;
+        return (float) ($end - $stateCount[4] - $stateCount[3]) - $stateCount[2] / 2.0;
     }
 
     /**
@@ -277,9 +278,12 @@ class FinderPatternFinder
      *
      * @return vertical center of finder pattern, or {@link Float#NaN} if not found
      */
-    private function crossCheckVertical($startI, $centerJ, $maxCount,
-                                        $originalStateCountTotal)
-    {
+    private function crossCheckVertical(
+        $startI,
+        $centerJ,
+        $maxCount,
+        $originalStateCountTotal
+    ) {
         $image = $this->image;
 
         $maxI       = $image->getHeight();
@@ -361,9 +365,12 @@ class FinderPatternFinder
      * except it reads horizontally instead of vertically. This is used to cross-cross
      * check a vertical cross check and locate the real center of the alignment pattern.</p>
      */
-    private function crossCheckHorizontal($startJ, $centerI, $maxCount,
-                                          $originalStateCountTotal)
-    {
+    private function crossCheckHorizontal(
+        $startJ,
+        $centerI,
+        $maxCount,
+        $originalStateCountTotal
+    ) {
         $image = $this->image;
 
         $maxJ       = $this->image->getWidth();
@@ -445,8 +452,8 @@ class FinderPatternFinder
 
         // Start counting up, left from center finding black center mass
         $i       = 0;
-        $startI  = (int)($startI);
-        $centerJ = (int)($centerJ);
+        $startI  = (int) ($startI);
+        $centerJ = (int) ($centerJ);
         while ($startI >= $i && $centerJ >= $i && $this->image->get($centerJ - $i, $startI - $i)) {
             $stateCount[2]++;
             $i++;
@@ -457,8 +464,10 @@ class FinderPatternFinder
         }
 
         // Continue up, left finding white space
-        while ($startI >= $i && $centerJ >= $i && !$this->image->get($centerJ - $i, $startI - $i) &&
-            $stateCount[1] <= $maxCount) {
+        while (
+            $startI >= $i && $centerJ >= $i && !$this->image->get($centerJ - $i, $startI - $i) &&
+            $stateCount[1] <= $maxCount
+        ) {
             $stateCount[1]++;
             $i++;
         }
@@ -469,8 +478,10 @@ class FinderPatternFinder
         }
 
         // Continue up, left finding black border
-        while ($startI >= $i && $centerJ >= $i && $this->image->get($centerJ - $i, $startI - $i) &&
-            $stateCount[0] <= $maxCount) {
+        while (
+            $startI >= $i && $centerJ >= $i && $this->image->get($centerJ - $i, $startI - $i) &&
+            $stateCount[0] <= $maxCount
+        ) {
             $stateCount[0]++;
             $i++;
         }
@@ -493,8 +504,10 @@ class FinderPatternFinder
             return false;
         }
 
-        while ($startI + $i < $maxI && $centerJ + $i < $maxJ && !$this->image->get($centerJ + $i, $startI + $i) &&
-            $stateCount[3] < $maxCount) {
+        while (
+            $startI + $i < $maxI && $centerJ + $i < $maxJ && !$this->image->get($centerJ + $i, $startI + $i) &&
+            $stateCount[3] < $maxCount
+        ) {
             $stateCount[3]++;
             $i++;
         }
@@ -503,8 +516,10 @@ class FinderPatternFinder
             return false;
         }
 
-        while ($startI + $i < $maxI && $centerJ + $i < $maxJ && $this->image->get($centerJ + $i, $startI + $i) &&
-            $stateCount[4] < $maxCount) {
+        while (
+            $startI + $i < $maxI && $centerJ + $i < $maxJ && $this->image->get($centerJ + $i, $startI + $i) &&
+            $stateCount[4] < $maxCount
+        ) {
             $stateCount[4]++;
             $i++;
         }
@@ -545,7 +560,7 @@ class FinderPatternFinder
         // and that we need to keep looking. We detect this by asking if the estimated module sizes
         // vary too much. We arbitrarily say that when the total deviation from average exceeds
         // 5% of the total module size estimates, it's too much.
-        $average        = $totalModuleSize / (float)$max;
+        $average        = $totalModuleSize / (float) $max;
         $totalDeviation = 0.0;
         foreach ($this->possibleCenters as $pattern) {
             $totalDeviation += abs($pattern->getEstimatedModuleSize() - $average);
@@ -581,8 +596,8 @@ class FinderPatternFinder
                     // This is the case where you find top left last.
                     $this->hasSkipped = true;
 
-                    return (int)((abs($firstConfirmedCenter->getX() - $center->getX()) -
-                            abs($firstConfirmedCenter->getY() - $center->getY())) / 2);
+                    return (int) ((abs($firstConfirmedCenter->getX() - $center->getX()) -
+                        abs($firstConfirmedCenter->getY() - $center->getY())) / 2);
                 }
             }
         }
@@ -614,8 +629,8 @@ class FinderPatternFinder
                 $totalModuleSize += $size;
                 $square          += $size * $size;
             }
-            $this->average = $totalModuleSize / (float)$startSize;
-            $stdDev        = (float)sqrt($square / $startSize - $this->average * $this->average);
+            $this->average = $totalModuleSize / (float) $startSize;
+            $stdDev        = (float) sqrt($square / $startSize - $this->average * $this->average);
 
             usort($this->possibleCenters, [$this, 'FurthestFromAverageComparator']);
 
@@ -624,7 +639,7 @@ class FinderPatternFinder
             for ($i = 0; $i < count($this->possibleCenters) && count($this->possibleCenters) > 3; $i++) {
                 $pattern = $this->possibleCenters[$i];
                 if (abs($pattern->getEstimatedModuleSize() - $this->average) > $limit) {
-                    unset($this->possibleCenters[$i]);//возможно что ключи меняются в java при вызове .remove(i) ???
+                    unset($this->possibleCenters[$i]); //возможно что ключи меняются в java при вызове .remove(i) ???
                     $this->possibleCenters = array_values($this->possibleCenters);
                     $i--;
                 }
@@ -639,7 +654,7 @@ class FinderPatternFinder
                 $totalModuleSize += $possibleCenter->getEstimatedModuleSize();
             }
 
-            $this->average = $totalModuleSize / (float)count($this->possibleCenters);
+            $this->average = $totalModuleSize / (float) count($this->possibleCenters);
 
             usort($this->possibleCenters, [$this, 'CenterComparator']);
 

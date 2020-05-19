@@ -130,7 +130,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                 $max = 0;
                 for ($yy = 0, $offset = $yoffset * $width + $xoffset; $yy < self::$BLOCK_SIZE; $yy++, $offset += $width) {
                     for ($xx = 0; $xx < self::$BLOCK_SIZE; $xx++) {
-                        $pixel = ((int)($luminances[(int)($offset + $xx)]) & 0xFF);
+                        $pixel = ((int) ($luminances[(int) ($offset + $xx)]) & 0xFF);
                         $sum   += $pixel;
                         // still looking for good contrast
                         if ($pixel < $min) {
@@ -160,7 +160,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                     //
                     // The default assumption is that the block is light/background. Since no estimate for
                     // the level of dark pixels exists locally, use half the min for the block.
-                    $average = (int)($min / 2);
+                    $average = (int) ($min / 2);
 
                     if ($y > 0 && $x > 0) {
                         // Correct the "white background" assumption for blocks that have neighbors by comparing
@@ -171,13 +171,13 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
 
                         // The (min < bp) is arbitrary but works better than other heuristics that were tried.
                         $averageNeighborBlackPoint =
-                            (int)(($blackPoints[$y - 1][$x] + (2 * $blackPoints[$y][$x - 1]) + $blackPoints[$y - 1][$x - 1]) / 4);
+                            (int) (($blackPoints[$y - 1][$x] + (2 * $blackPoints[$y][$x - 1]) + $blackPoints[$y - 1][$x - 1]) / 4);
                         if ($min < $averageNeighborBlackPoint) {
                             $average = $averageNeighborBlackPoint;
                         }
                     }
                 }
-                $blackPoints[$y][$x] = (int)($average);
+                $blackPoints[$y][$x] = (int) ($average);
             }
         }
 
@@ -217,7 +217,7 @@ final class HybridBinarizer extends GlobalHistogramBinarizer
                     $blackRow = $blackPoints[$top + $z];
                     $sum      += $blackRow[$left - 2] + $blackRow[$left - 1] + $blackRow[$left] + $blackRow[$left + 1] + $blackRow[$left + 2];
                 }
-                $average = (int)($sum / 25);
+                $average = (int) ($sum / 25);
 
                 self::thresholdBlock($luminances, $xoffset, $yoffset, $average, $width, $matrix);
             }

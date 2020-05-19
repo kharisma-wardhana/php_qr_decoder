@@ -15,11 +15,11 @@ final class BitMatrix
             $height = $width;
         }
         if (!$rowSize) {
-            $rowSize = (int)(($width + 31) / 32);
+            $rowSize = (int) (($width + 31) / 32);
         }
         if (!$bits) {
             $bits = fill_array(0, $rowSize * $height, 0);
-//            [];//new int[rowSize * height];
+            //            [];//new int[rowSize * height];
         }
         $this->width   = $width;
         $this->height  = $height;
@@ -39,8 +39,10 @@ final class BitMatrix
         $nRows       = 0;
         $pos         = 0;
         while ($pos < strlen($stringRepresentation)) {
-            if ($stringRepresentation[$pos] == '\n' ||
-                $stringRepresentation->{$pos} == '\r') {
+            if (
+                $stringRepresentation[$pos] == '\n' ||
+                $stringRepresentation->{$pos} == '\r'
+            ) {
                 if ($bitsPos > $rowStartPos) {
                     if ($rowLength == -1) {
                         $rowLength = $bitsPos - $rowStartPos;
@@ -61,7 +63,8 @@ final class BitMatrix
                 $bitsPos++;
             } else {
                 throw new \InvalidArgumentException(
-                    "illegal character encountered: " . substr($stringRepresentation, $pos));
+                    "illegal character encountered: " . substr($stringRepresentation, $pos)
+                );
             }
         }
 
@@ -93,7 +96,7 @@ final class BitMatrix
      */
     public function set($x, $y)
     {
-        $offset = (int)($y * $this->rowSize + ($x / 32));
+        $offset = (int) ($y * $this->rowSize + ($x / 32));
         if (!isset($this->bits[$offset])) {
             $this->bits[$offset] = 0;
         }
@@ -107,12 +110,12 @@ final class BitMatrix
         //$this->bits[$offset] = intval32bits($this->bits[$offset]);
 
         //}
-//16777216
+        //16777216
     }
 
     public function _unset($x, $y)
-    {//было unset, php не позволяет использовать unset
-        $offset              = (int)($y * $this->rowSize + ($x / 32));
+    { //было unset, php не позволяет использовать unset
+        $offset              = (int) ($y * $this->rowSize + ($x / 32));
         $this->bits[$offset] &= ~(1 << ($x & 0x1f));
     }
 
@@ -124,7 +127,7 @@ final class BitMatrix
      */
     public function flip($x, $y)
     {
-        $offset = $y * $this->rowSize + (int)($x / 32);
+        $offset = $y * $this->rowSize + (int) ($x / 32);
 
         $this->bits[$offset] = ($this->bits[$offset] ^ (1 << ($x & 0x1f)));
     }
@@ -136,9 +139,11 @@ final class BitMatrix
      * @param $mask ;  XOR mask
      */
     public function _xor($mask)
-    {//было xor, php не позволяет использовать xor
-        if ($this->width != $mask->getWidth() || $this->height != $mask->getHeight()
-            || $this->rowSize != $mask->getRowSize()) {
+    { //было xor, php не позволяет использовать xor
+        if (
+            $this->width != $mask->getWidth() || $this->height != $mask->getHeight()
+            || $this->rowSize != $mask->getRowSize()
+        ) {
             throw new \InvalidArgumentException("input matrix dimensions do not match");
         }
         $rowArray = new BitArray($this->width / 32 + 1);
@@ -186,7 +191,7 @@ final class BitMatrix
         for ($y = $top; $y < $bottom; $y++) {
             $offset = $y * $this->rowSize;
             for ($x = $left; $x < $right; $x++) {
-                $this->bits[$offset + (int)($x / 32)] = ($this->bits[$offset + (int)($x / 32)] |= 1 << ($x & 0x1f));
+                $this->bits[$offset + (int) ($x / 32)] = ($this->bits[$offset + (int) ($x / 32)] |= 1 << ($x & 0x1f));
             }
         }
     }
@@ -284,7 +289,7 @@ final class BitMatrix
                     }
                     if ($x32 * 32 + 31 > $right) {
                         $bit = 31;
-                        while ((sdvig3($theBits, $bit)) == 0) {//>>>
+                        while ((sdvig3($theBits, $bit)) == 0) { //>>>
                             $bit--;
                         }
                         if (($x32 * 32 + $bit) > $right) {
@@ -347,7 +352,7 @@ final class BitMatrix
 
         $theBits = $this->bits[$bitsOffset];
         $bit     = 31;
-        while ((sdvig3($theBits, $bit)) == 0) {//>>>
+        while ((sdvig3($theBits, $bit)) == 0) { //>>>
             $bit--;
         }
         $x += $bit;
@@ -402,13 +407,13 @@ final class BitMatrix
     public function toString($setString = '', $unsetString = '', $lineSeparator = '')
     {
         if (!$setString || !$unsetString) {
-            return (string)'X ' . '  ';
+            return (string) 'X ' . '  ';
         }
         if ($lineSeparator && $lineSeparator !== "\n") {
             return $this->toString_($setString, $unsetString, $lineSeparator);
         }
 
-        return (string)($setString . $unsetString . "\n");
+        return (string) ($setString . $unsetString . "\n");
     }
 
     public function toString_($setString, $unsetString, $lineSeparator)
@@ -422,7 +427,7 @@ final class BitMatrix
             $result .= ($lineSeparator);
         }
 
-        return (string)$result;
+        return (string) $result;
     }
 
     /**
@@ -440,16 +445,16 @@ final class BitMatrix
     public function get($x, $y)
     {
 
-        $offset = (int)($y * $this->rowSize + ($x / 32));
+        $offset = (int) ($y * $this->rowSize + ($x / 32));
         if (!isset($this->bits[$offset])) {
             $this->bits[$offset] = 0;
         }
 
         // return (($this->bits[$offset] >> ($x & 0x1f)) & 1) != 0;
-        return (uRShift($this->bits[$offset], ($x & 0x1f)) & 1) != 0;//было >>> вместо >>, не знаю как эмулировать беззнаковый сдвиг
+        return (uRShift($this->bits[$offset], ($x & 0x1f)) & 1) != 0; //было >>> вместо >>, не знаю как эмулировать беззнаковый сдвиг
     }
 
-//  @Override
+    //  @Override
 
     public function _clone()
     {
