@@ -15,13 +15,12 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common\Detector;
+namespace ZxingSPE\Common\Detector;
 
 final class MathUtils
 {
     private function __construct()
     {
-
     }
 
     /**
@@ -36,7 +35,7 @@ final class MathUtils
      */
     public static function round($d)
     {
-        return (int)($d + ($d < 0.0 ? -0.5 : 0.5));
+        return (int) ($d + ($d < 0.0 ? -0.5 : 0.5));
     }
 
     public static function distance($aX, $aY, $bX, $bY)
@@ -44,6 +43,6 @@ final class MathUtils
         $xDiff = $aX - $bX;
         $yDiff = $aY - $bY;
 
-        return (float)sqrt($xDiff * $xDiff + $yDiff * $yDiff);
+        return (float) sqrt($xDiff * $xDiff + $yDiff * $yDiff);
     }
 }

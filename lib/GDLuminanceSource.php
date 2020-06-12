@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * This class is used to help decode images from files which arrive as GD Resource
@@ -53,8 +53,8 @@ final class GDLuminanceSource extends LuminanceSource
         $this->top        = 0;
 
 
-// In order to measure pure decoding speed, we convert the entire image to a greyscale array
-// up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
+        // In order to measure pure decoding speed, we convert the entire image to a greyscale array
+        // up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
         $this->luminances = [];
         //$this->luminances = $this->grayScaleToBitmap($this->grayscale());
 
@@ -69,12 +69,12 @@ final class GDLuminanceSource extends LuminanceSource
                 $g     = $pixel['green'];
                 $b     = $pixel['blue'];
                 if ($r == $g && $g == $b) {
-// Image is already greyscale, so pick any channel.
+                    // Image is already greyscale, so pick any channel.
 
-                    $this->luminances[] = $r;//(($r + 128) % 256) - 128;
+                    $this->luminances[] = $r; //(($r + 128) % 256) - 128;
                 } else {
-// Calculate luminance cheaply, favoring green.
-                    $this->luminances[] = ($r + 2 * $g + $b) / 4;//(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
+                    // Calculate luminance cheaply, favoring green.
+                    $this->luminances[] = ($r + 2 * $g + $b) / 4; //(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
                 }
             }
         }
@@ -104,7 +104,7 @@ final class GDLuminanceSource extends LuminanceSource
         //   $this->luminances = $this->grayScaleToBitmap($this->luminances);
     }
 
-//@Override
+    //@Override
     public function getRow($y, $row = null)
     {
         if ($y < 0 || $y >= $this->getHeight()) {
@@ -120,14 +120,14 @@ final class GDLuminanceSource extends LuminanceSource
         return $row;
     }
 
-//@Override
+    //@Override
     public function getMatrix()
     {
         $width  = $this->getWidth();
         $height = $this->getHeight();
 
-// If the caller asks for the entire underlying image, save the copy and give them the
-// original data. The docs specifically warn that result.length must be ignored.
+        // If the caller asks for the entire underlying image, save the copy and give them the
+        // original data. The docs specifically warn that result.length must be ignored.
         if ($width == $this->dataWidth && $height == $this->dataHeight) {
             return $this->luminances;
         }
@@ -136,14 +136,14 @@ final class GDLuminanceSource extends LuminanceSource
         $matrix      = [];
         $inputOffset = $this->top * $this->dataWidth + $this->left;
 
-// If the width matches the full width of the underlying data, perform a single copy.
+        // If the width matches the full width of the underlying data, perform a single copy.
         if ($width == $this->dataWidth) {
             $matrix = arraycopy($this->luminances, $inputOffset, $matrix, 0, $area);
 
             return $matrix;
         }
 
-// Otherwise copy one cropped row at a time.
+        // Otherwise copy one cropped row at a time.
         $rgb = $this->luminances;
         for ($y = 0; $y < $height; $y++) {
             $outputOffset = $y * $width;
@@ -154,21 +154,23 @@ final class GDLuminanceSource extends LuminanceSource
         return $matrix;
     }
 
-//@Override
+    //@Override
     public function isCropSupported()
     {
         return true;
     }
 
-//@Override
+    //@Override
     public function crop($left, $top, $width, $height)
     {
-        return new GDLuminanceSource($this->luminances,
+        return new GDLuminanceSource(
+            $this->luminances,
             $this->dataWidth,
             $this->dataHeight,
             $this->left + $left,
             $this->top + $top,
             $width,
-            $height);
+            $height
+        );
     }
 }

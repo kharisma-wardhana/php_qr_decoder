@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -37,15 +37,16 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
     private $left;
     private $top;
 
-    public function __construct($yuvData,
-                                $dataWidth,
-                                $dataHeight,
-                                $left,
-                                $top,
-                                $width,
-                                $height,
-                                $reverseHorizontal)
-    {
+    public function __construct(
+        $yuvData,
+        $dataWidth,
+        $dataHeight,
+        $left,
+        $top,
+        $width,
+        $height,
+        $reverseHorizontal
+    ) {
         parent::__construct($width, $height);
 
         if ($left + $width > $dataWidth || $top + $height > $dataHeight) {
@@ -70,7 +71,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
         }
         $width = $this->getWidth();
         if ($row == null || count($row) < $width) {
-            $row = [];//new byte[width];
+            $row = []; //new byte[width];
         }
         $offset = ($y + $this->top) * $this->dataWidth + $this->left;
         $row    = arraycopy($this->yuvData, $offset, $row, 0, $width);
@@ -91,7 +92,7 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
         }
 
         $area        = $width * $height;
-        $matrix      = [];//new byte[area];
+        $matrix      = []; //new byte[area];
         $inputOffset = $this->top * $this->dataWidth + $this->left;
 
         // If the width matches the full width of the underlying data, perform a single copy.
@@ -121,21 +122,23 @@ final class PlanarYUVLuminanceSource extends LuminanceSource
     // @Override
     public function crop($left, $top, $width, $height)
     {
-        return new PlanarYUVLuminanceSource($this->yuvData,
+        return new PlanarYUVLuminanceSource(
+            $this->yuvData,
             $this->dataWidth,
             $this->dataHeight,
             $this->left + $left,
             $this->top + $top,
             $width,
             $height,
-            false);
+            false
+        );
     }
 
     public function renderThumbnail()
     {
-        $width       = (int)($this->getWidth() / self::$THUMBNAIL_SCALE_FACTOR);
-        $height      = (int)($this->getHeight() / self::$THUMBNAIL_SCALE_FACTOR);
-        $pixels      = [];//new int[width * height];
+        $width       = (int) ($this->getWidth() / self::$THUMBNAIL_SCALE_FACTOR);
+        $height      = (int) ($this->getHeight() / self::$THUMBNAIL_SCALE_FACTOR);
+        $pixels      = []; //new int[width * height];
         $yuv         = $this->yuvData;
         $inputOffset = $this->top * $this->dataWidth + $this->left;
 

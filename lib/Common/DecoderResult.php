@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 /**
  * <p>Encapsulates the result of decoding a matrix of bits. This typically
@@ -118,5 +118,4 @@ final class DecoderResult
     {
         return $this->structuredAppendSequenceNumber;
     }
-
 }

@@ -15,10 +15,10 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace ZxingSPE;
 
-use Zxing\Common\BitArray;
-use Zxing\Common\BitMatrix;
+use ZxingSPE\Common\BitArray;
+use ZxingSPE\Common\BitMatrix;
 
 /**
  * This class hierarchy provides a set of methods to convert luminance data to 1 bit data.

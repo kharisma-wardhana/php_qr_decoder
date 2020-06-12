@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Common\Reedsolomon;
+namespace ZxingSPE\Common\Reedsolomon;
 
 /**
  * <p>This class contains utility methods for performing mathematical operations over
@@ -127,7 +127,7 @@ final class GenericGF
         if ($coefficient == 0) {
             return $this->zero;
         }
-        $coefficients    = fill_array(0, $degree + 1, 0);//new int[degree + 1];
+        $coefficients    = fill_array(0, $degree + 1, 0); //new int[degree + 1];
         $coefficients[0] = $coefficient;
 
         return new GenericGFPoly($this, $coefficients);
@@ -190,9 +190,8 @@ final class GenericGF
     // @Override
     public function toString()
     {
-        return "GF(0x" . dechex((int)($this->primitive)) . ',' . $this->size . ')';
+        return "GF(0x" . dechex((int) ($this->primitive)) . ',' . $this->size . ')';
     }
-
 }
 
 GenericGF::Init();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 /**
  * Encapsulates a Character Set ECI, according to "Extended Channel

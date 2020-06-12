@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Common\Reedsolomon;
+namespace ZxingSPE\Common\Reedsolomon;
 
 /**
  * <p>Represents a polynomial whose coefficients are elements of a GF.
@@ -59,11 +59,13 @@ final class GenericGFPoly
                 $this->coefficients = [0];
             } else {
                 $this->coefficients = fill_array(0, $coefficientsLength - $firstNonZero, 0);
-                $this->coefficients = arraycopy($coefficients,
+                $this->coefficients = arraycopy(
+                    $coefficients,
                     $firstNonZero,
                     $this->coefficients,
                     0,
-                    count($this->coefficients));
+                    count($this->coefficients)
+                );
             }
         } else {
             $this->coefficients = $coefficients;
@@ -129,8 +131,10 @@ final class GenericGFPoly
         for ($i = 0; $i < $aLength; $i++) {
             $aCoeff = $aCoefficients[$i];
             for ($j = 0; $j < $bLength; $j++) {
-                $product[$i + $j] = GenericGF::addOrSubtract($product[$i + $j],
-                    $this->field->multiply($aCoeff, $bCoefficients[$j]));
+                $product[$i + $j] = GenericGF::addOrSubtract(
+                    $product[$i + $j],
+                    $this->field->multiply($aCoeff, $bCoefficients[$j])
+                );
             }
         }
 

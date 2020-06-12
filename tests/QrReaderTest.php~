@@ -2,7 +2,7 @@
 
 namespace Khanamiryan\QrCodeTests;
 
-use Zxing\QrReader;
+use ZxingSPE\QrReader;
 
 class QrReaderTest extends \PHPUnit_Framework_TestCase
 {

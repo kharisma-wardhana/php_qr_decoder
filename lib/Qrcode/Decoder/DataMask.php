@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
-use Zxing\Common\BitMatrix;
+use ZxingSPE\Common\BitMatrix;
 
 /**
  * <p>Encapsulates data masks for the data bits in a QR code, per ISO 18004:2006 6.8. Implementations
@@ -40,7 +40,6 @@ abstract class DataMask
 
     public function __construct()
     {
-
     }
 
     public static function Init()
@@ -151,7 +150,7 @@ final class DataMask100 extends DataMask
     //@Override
     public function isMasked($i, $j)
     {
-        return (int)(((int)($i / 2) + (int)($j / 3)) & 0x01) == 0;
+        return (int) (((int) ($i / 2) + (int) ($j / 3)) & 0x01) == 0;
     }
 }
 

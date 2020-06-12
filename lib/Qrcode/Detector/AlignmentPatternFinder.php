@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
-use Zxing\NotFoundException;
-use Zxing\ResultPointCallback;
-use Zxing\Common\BitMatrix;
+use ZxingSPE\NotFoundException;
+use ZxingSPE\ResultPointCallback;
+use ZxingSPE\Common\BitMatrix;
 
 /**
  * <p>This class attempts to find alignment patterns in a QR Code. Alignment patterns look like finder
@@ -57,14 +57,15 @@ final class AlignmentPatternFinder
      * @param height     height of region to search
      * @param moduleSize estimated module size so far
      */
-    public function __construct($image,
-                                $startX,
-                                $startY,
-                                $width,
-                                $height,
-                                $moduleSize,
-                                $resultPointCallback)
-    {
+    public function __construct(
+        $image,
+        $startX,
+        $startY,
+        $width,
+        $height,
+        $moduleSize,
+        $resultPointCallback
+    ) {
         $this->image                = $image;
         $this->possibleCenters      = [];
         $this->startX               = $startX;
@@ -94,8 +95,8 @@ final class AlignmentPatternFinder
         $stateCount = [];
         for ($iGen = 0; $iGen < $height; $iGen++) {
             // Search from middle outwards
-            $i             = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : -(($iGen + 1) / 2));
-            $i             = (int)($i);
+            $i             = $middleI + (($iGen & 0x01) == 0 ? ($iGen + 1) / 2 : - (($iGen + 1) / 2));
+            $i             = (int) ($i);
             $stateCount[0] = 0;
             $stateCount[1] = 0;
             $stateCount[2] = 0;
@@ -142,7 +143,6 @@ final class AlignmentPatternFinder
                     return $confirmed;
                 }
             }
-
         }
 
         // Hmm, nothing we saw was observed and confirmed twice. If we had
@@ -189,9 +189,9 @@ final class AlignmentPatternFinder
     {
         $stateCountTotal = $stateCount[0] + $stateCount[1] + $stateCount[2];
         $centerJ         = $this->centerFromEnd($stateCount, $j);
-        $centerI         = $this->crossCheckVertical($i, (int)$centerJ, 2 * $stateCount[1], $stateCountTotal);
+        $centerI         = $this->crossCheckVertical($i, (int) $centerJ, 2 * $stateCount[1], $stateCountTotal);
         if (!is_nan($centerI)) {
-            $estimatedModuleSize = (float)($stateCount[0] + $stateCount[1] + $stateCount[2]) / 3.0;
+            $estimatedModuleSize = (float) ($stateCount[0] + $stateCount[1] + $stateCount[2]) / 3.0;
             foreach ($this->possibleCenters as $center) {
                 // Look for about the same center and module size:
                 if ($center->aboutEquals($estimatedModuleSize, $centerI, $centerJ)) {
@@ -215,7 +215,7 @@ final class AlignmentPatternFinder
      */
     private static function centerFromEnd($stateCount, $end)
     {
-        return (float)($end - $stateCount[2]) - $stateCount[1] / 2.0;
+        return (float) ($end - $stateCount[2]) - $stateCount[1] / 2.0;
     }
 
     /**
@@ -230,9 +230,12 @@ final class AlignmentPatternFinder
      *
      * @return vertical center of alignment pattern, or {@link Float#NaN} if not found
      */
-    private function crossCheckVertical($startI, $centerJ, $maxCount,
-                                        $originalStateCountTotal)
-    {
+    private function crossCheckVertical(
+        $startI,
+        $centerJ,
+        $maxCount,
+        $originalStateCountTotal
+    ) {
         $image = $this->image;
 
         $maxI          = $image->getHeight();

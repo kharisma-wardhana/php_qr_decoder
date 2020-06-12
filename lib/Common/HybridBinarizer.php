@@ -15,11 +15,11 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
-use Zxing\Binarizer;
-use Zxing\LuminanceSource;
-use Zxing\NotFoundException;
+use ZxingSPE\Binarizer;
+use ZxingSPE\LuminanceSource;
+use ZxingSPE\NotFoundException;
 
 /**
  * This class implements a local thresholding algorithm, which while slower than the

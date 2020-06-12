@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Ashot
@@ -22,7 +23,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 /**
  * <p>A simple, fast array of bits, represented compactly by an array of ints internally.</p>
@@ -50,7 +51,6 @@ final class BitArray
             $this->bits = $bits;
             $this->size = $size;
         }
-
     }
 
     private static function makeArray($size)
@@ -75,8 +75,8 @@ final class BitArray
      */
     public function set($i)
     {
-        $this->bits[(int)($i / 32)] |= 1 << ($i & 0x1F);
-        $this->bits[(int)($i / 32)] = ($this->bits[(int)($i / 32)]);
+        $this->bits[(int) ($i / 32)] |= 1 << ($i & 0x1F);
+        $this->bits[(int) ($i / 32)] = ($this->bits[(int) ($i / 32)]);
     }
 
     /**
@@ -86,8 +86,8 @@ final class BitArray
      */
     public function flip($i)
     {
-        $this->bits[(int)($i / 32)] ^= 1 << ($i & 0x1F);
-        $this->bits[(int)($i / 32)] = ($this->bits[(int)($i / 32)]);
+        $this->bits[(int) ($i / 32)] ^= 1 << ($i & 0x1F);
+        $this->bits[(int) ($i / 32)] = ($this->bits[(int) ($i / 32)]);
     }
 
     /**
@@ -102,8 +102,8 @@ final class BitArray
         if ($from >= $this->size) {
             return $this->size;
         }
-        $bitsOffset  = (int)($from / 32);
-        $currentBits = (int)$this->bits[$bitsOffset];
+        $bitsOffset  = (int) ($from / 32);
+        $currentBits = (int) $this->bits[$bitsOffset];
         // mask off lesser bits first
         $currentBits &= ~((1 << ($from & 0x1F)) - 1);
         while ($currentBits == 0) {
@@ -128,7 +128,7 @@ final class BitArray
         if ($from >= $this->size) {
             return $this->size;
         }
-        $bitsOffset  = (int)($from / 32);
+        $bitsOffset  = (int) ($from / 32);
         $currentBits = ~$this->bits[$bitsOffset];
         // mask off lesser bits first
         $currentBits &= ~((1 << ($from & 0x1F)) - 1);
@@ -152,7 +152,7 @@ final class BitArray
      */
     public function setBulk($i, $newBits)
     {
-        $this->bits[(int)($i / 32)] = $newBits;
+        $this->bits[(int) ($i / 32)] = $newBits;
     }
 
     /**
@@ -170,8 +170,8 @@ final class BitArray
             return;
         }
         $end--; // will be easier to treat this as the last actually set bit -- inclusive
-        $firstInt = (int)($start / 32);
-        $lastInt  = (int)($end / 32);
+        $firstInt = (int) ($start / 32);
+        $lastInt  = (int) ($end / 32);
         for ($i = $firstInt; $i <= $lastInt; $i++) {
             $firstBit = $i > $firstInt ? 0 : $start & 0x1F;
             $lastBit  = $i < $lastInt ? 31 : $end & 0x1F;
@@ -218,8 +218,8 @@ final class BitArray
             return true; // empty range matches
         }
         $end--; // will be easier to treat this as the last actually set bit -- inclusive
-        $firstInt = (int)($start / 32);
-        $lastInt  = (int)($end / 32);
+        $firstInt = (int) ($start / 32);
+        $lastInt  = (int) ($end / 32);
         for ($i = $firstInt; $i <= $lastInt; $i++) {
             $firstBit = $i > $firstInt ? 0 : $start & 0x1F;
             $lastBit  = $i < $lastInt ? 31 : $end & 0x1F;
@@ -275,7 +275,7 @@ final class BitArray
     {
         $this->ensureCapacity($this->size + 1);
         if ($bit) {
-            $this->bits[(int)($this->size / 32)] |= 1 << ($this->size & 0x1F);
+            $this->bits[(int) ($this->size / 32)] |= 1 << ($this->size & 0x1F);
         }
         $this->size++;
     }
@@ -320,7 +320,7 @@ final class BitArray
                 }
                 $bitOffset++;
             }
-            $array[(int)($offset + $i)] = $theByte;
+            $array[(int) ($offset + $i)] = $theByte;
         }
     }
 
@@ -331,7 +331,7 @@ final class BitArray
      */
     public function get($i)
     {
-        $key = (int)($i / 32);
+        $key = (int) ($i / 32);
 
         return ($this->bits[$key] & (1 << ($i & 0x1F))) != 0;
     }
@@ -366,7 +366,7 @@ final class BitArray
             $x                       = (($x >> 4) & 0x0f0f0f0f) | (($x & 0x0f0f0f0f) << 4);
             $x                       = (($x >> 8) & 0x00ff00ff) | (($x & 0x00ff00ff) << 8);
             $x                       = (($x >> 16) & 0x0000ffff) | (($x & 0x0000ffff) << 16);
-            $newBits[(int)$len - $i] = (int)$x;
+            $newBits[(int) $len - $i] = (int) $x;
         }
         // now correct the int's if the bit size isn't a multiple of 32
         if ($this->size != $oldBitsLen * 32) {
@@ -379,12 +379,12 @@ final class BitArray
             for ($i = 1; $i < $oldBitsLen; $i++) {
                 $nextInt                = $newBits[$i];
                 $currentInt             |= $nextInt << (32 - $leftOffset);
-                $newBits[(int)($i) - 1] = $currentInt;
+                $newBits[(int) ($i) - 1] = $currentInt;
                 $currentInt             = ($nextInt >> $leftOffset) & $mask;
             }
-            $newBits[(int)($oldBitsLen) - 1] = $currentInt;
+            $newBits[(int) ($oldBitsLen) - 1] = $currentInt;
         }
-//        $bits = $newBits;
+        //        $bits = $newBits;
     }
 
     public function equals($o)
@@ -412,7 +412,7 @@ final class BitArray
             $result .= ($this->get($i) ? 'X' : '.');
         }
 
-        return (string)$result;
+        return (string) $result;
     }
 
     public function _clone()

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
 use  Zxing\ResultPoint;
 

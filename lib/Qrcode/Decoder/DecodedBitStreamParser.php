@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
-use Zxing\DecodeHintType;
-use Zxing\FormatException;
-use Zxing\Common\BitSource;
-use Zxing\Common\CharacterSetECI;
-use Zxing\Common\DecoderResult;
-use Zxing\Common\StringUtils;
+use ZxingSPE\DecodeHintType;
+use ZxingSPE\FormatException;
+use ZxingSPE\Common\BitSource;
+use ZxingSPE\Common\CharacterSetECI;
+use ZxingSPE\Common\DecoderResult;
+use ZxingSPE\Common\StringUtils;
 
 
 /**
@@ -47,13 +47,14 @@ final class DecodedBitStreamParser
     ];
     private static $GB2312_SUBSET = 1;
 
-    public static function decode($bytes,
-                                  $version,
-                                  $ecLevel,
-                                  $hints)
-    {
+    public static function decode(
+        $bytes,
+        $version,
+        $ecLevel,
+        $hints
+    ) {
         $bits           = new BitSource($bytes);
-        $result         = '';//new StringBuilder(50);
+        $result         = ''; //new StringBuilder(50);
         $byteSegments   = [];
         $symbolSequence = -1;
         $parityData     = -1;
@@ -122,12 +123,14 @@ final class DecodedBitStreamParser
             throw FormatException::getFormatInstance();
         }
 
-        return new DecoderResult($bytes,
+        return new DecoderResult(
+            $bytes,
             $result,
             empty($byteSegments) ? null : $byteSegments,
-            $ecLevel == null ? null : 'L',//ErrorCorrectionLevel::toString($ecLevel),
+            $ecLevel == null ? null : 'L', //ErrorCorrectionLevel::toString($ecLevel),
             $symbolSequence,
-            $parityData);
+            $parityData
+        );
     }
 
     private static function parseECIValue($bits)
@@ -155,10 +158,11 @@ final class DecodedBitStreamParser
     /**
      * See specification GBT 18284-2000
      */
-    private static function decodeHanziSegment($bits,
-                                               &$result,
-                                               $count)
-    {
+    private static function decodeHanziSegment(
+        $bits,
+        &$result,
+        $count
+    ) {
         // Don't crash trying to read more bits than we have available.
         if ($count * 13 > $bits->available()) {
             throw FormatException::getFormatInstance();
@@ -179,18 +183,19 @@ final class DecodedBitStreamParser
                 // In the 0xB0A1 to 0xFAFE range
                 $assembledTwoBytes += 0x0A6A1;
             }
-            $buffer[$offset]     = (($assembledTwoBytes >> 8) & 0xFF);//(byte)
-            $buffer[$offset + 1] = ($assembledTwoBytes & 0xFF);//(byte)
+            $buffer[$offset]     = (($assembledTwoBytes >> 8) & 0xFF); //(byte)
+            $buffer[$offset + 1] = ($assembledTwoBytes & 0xFF); //(byte)
             $offset              += 2;
             $count--;
         }
         $result .= iconv('GB2312', 'UTF-8', implode($buffer));
     }
 
-    private static function decodeNumericSegment($bits,
-                                                 &$result,
-                                                 $count)
-    {
+    private static function decodeNumericSegment(
+        $bits,
+        &$result,
+        $count
+    ) {
         // Read three digits at a time
         while ($count >= 3) {
             // Each 10 bits encodes three digits
@@ -239,11 +244,12 @@ final class DecodedBitStreamParser
         return self::$ALPHANUMERIC_CHARS[$value];
     }
 
-    private static function decodeAlphanumericSegment($bits,
-                                                      &$result,
-                                                      $count,
-                                                      $fc1InEffect)
-    {
+    private static function decodeAlphanumericSegment(
+        $bits,
+        &$result,
+        $count,
+        $fc1InEffect
+    ) {
         // Read two characters at a time
         $start = strlen($result);
         while ($count > 1) {
@@ -269,7 +275,7 @@ final class DecodedBitStreamParser
                 if ($result[$i] == '%') {
                     if ($i < strlen($result) - 1 && $result[$i + 1] == '%') {
                         // %% is rendered as %
-                        $result = substr_replace($result, '', $i + 1, 1);//deleteCharAt(i + 1);
+                        $result = substr_replace($result, '', $i + 1, 1); //deleteCharAt(i + 1);
                     } else {
                         // In alpha mode, % should be converted to FNC1 separator 0x1D
                         $result . setCharAt($i, chr(0x1D));
@@ -279,13 +285,14 @@ final class DecodedBitStreamParser
         }
     }
 
-    private static function decodeByteSegment($bits,
-                                              &$result,
-                                              $count,
-                                              $currentCharacterSetECI,
-                                              &$byteSegments,
-                                              $hints)
-    {
+    private static function decodeByteSegment(
+        $bits,
+        &$result,
+        $count,
+        $currentCharacterSetECI,
+        &$byteSegments,
+        $hints
+    ) {
         // Don't crash trying to read more bits than we have available.
         if (8 * $count > $bits->available()) {
             throw FormatException::getFormatInstance();
@@ -293,7 +300,7 @@ final class DecodedBitStreamParser
 
         $readBytes = fill_array(0, $count, 0);
         for ($i = 0; $i < $count; $i++) {
-            $readBytes[$i] = $bits->readBits(8);//(byte)
+            $readBytes[$i] = $bits->readBits(8); //(byte)
         }
         $text     = implode(array_map('chr', $readBytes));
         $encoding = '';
@@ -309,15 +316,16 @@ final class DecodedBitStreamParser
             $encoding = $currentCharacterSetECI->name();
         }
         //  $result.= mb_convert_encoding($text ,$encoding);//(new String(readBytes, encoding));
-        $result .= $text;//(new String(readBytes, encoding));
+        $result .= $text; //(new String(readBytes, encoding));
 
         $byteSegments = array_merge($byteSegments, $readBytes);
     }
 
-    private static function decodeKanjiSegment($bits,
-                                               &$result,
-                                               $count)
-    {
+    private static function decodeKanjiSegment(
+        $bits,
+        &$result,
+        $count
+    ) {
         // Don't crash trying to read more bits than we have available.
         if ($count * 13 > $bits->available()) {
             throw FormatException::getFormatInstance();
@@ -338,7 +346,7 @@ final class DecodedBitStreamParser
                 // In the 0xE040 to 0xEBBF range
                 $assembledTwoBytes += 0x0C140;
             }
-            $buffer[$offset]     = ($assembledTwoBytes >> 8);//(byte)
+            $buffer[$offset]     = ($assembledTwoBytes >> 8); //(byte)
             $buffer[$offset + 1] = $assembledTwoBytes; //(byte)
             $offset              += 2;
             $count--;
@@ -350,6 +358,5 @@ final class DecodedBitStreamParser
 
     private function DecodedBitStreamParser()
     {
-
     }
 }

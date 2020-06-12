@@ -1,6 +1,6 @@
 <?php
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 final class BitMatrix
 {

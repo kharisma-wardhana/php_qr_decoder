@@ -15,12 +15,12 @@
 * limitations under the License.
 */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
-use Zxing\BinaryBitmap;
-use Zxing\Common\BitMatrix;
-use Zxing\NotFoundException;
-use Zxing\ResultPoint;
+use ZxingSPE\BinaryBitmap;
+use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\NotFoundException;
+use ZxingSPE\ResultPoint;
 
 /**
  * <p>This class attempts to find finder patterns in a QR Code. Finder patterns are the square

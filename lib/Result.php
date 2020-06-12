@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * <p>Encapsulates the result of decoding a barcode within an image.</p>

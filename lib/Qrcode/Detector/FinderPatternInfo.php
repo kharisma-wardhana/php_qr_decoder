@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
 /**
  * <p>Encapsulates information about finder patterns in an image, including the location of

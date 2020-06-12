@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common\Reedsolomon;
+namespace ZxingSPE\Common\Reedsolomon;
 
 /**
  * <p>Thrown when an exception occurs during Reed-Solomon decoding, such as when

@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode;
+namespace ZxingSPE\Qrcode;
 
-use Zxing\BinaryBitmap;
-use Zxing\ChecksumException;
-use Zxing\FormatException;
-use Zxing\NotFoundException;
-use Zxing\Reader;
-use Zxing\Result;
-use Zxing\Common\BitMatrix;
-use Zxing\Qrcode\Decoder\Decoder;
-use Zxing\Qrcode\Detector\Detector;
+use ZxingSPE\BinaryBitmap;
+use ZxingSPE\ChecksumException;
+use ZxingSPE\FormatException;
+use ZxingSPE\NotFoundException;
+use ZxingSPE\Reader;
+use ZxingSPE\Result;
+use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Qrcode\Decoder\Decoder;
+use ZxingSPE\Qrcode\Detector\Detector;
 
 /**
  * This implementation can detect and decode QR Codes in an image.

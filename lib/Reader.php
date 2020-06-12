@@ -1,6 +1,6 @@
 <?php
 
-namespace Zxing;
+namespace ZxingSPE;
 
 interface Reader
 {

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
 /**
  * <p>Encapsulates a QR Code's format information, including the data mask used and
@@ -46,7 +46,7 @@ final class FormatInformation
         // Bits 3,4
         $this->errorCorrectionLevel = ErrorCorrectionLevel::forBits(($formatInfo >> 3) & 0x03);
         // Bottom 3 bits
-        $this->dataMask = ($formatInfo & 0x07);//(byte)
+        $this->dataMask = ($formatInfo & 0x07); //(byte)
     }
 
     public static function Init()
@@ -106,8 +106,10 @@ final class FormatInformation
         // Should return null, but, some QR codes apparently
         // do not mask this info. Try again by actually masking the pattern
         // first
-        return self::doDecodeFormatInformation($maskedFormatInfo1 ^ self::$FORMAT_INFO_MASK_QR,
-            $maskedFormatInfo2 ^ self::$FORMAT_INFO_MASK_QR);
+        return self::doDecodeFormatInformation(
+            $maskedFormatInfo1 ^ self::$FORMAT_INFO_MASK_QR,
+            $maskedFormatInfo2 ^ self::$FORMAT_INFO_MASK_QR
+        );
     }
 
     private static function doDecodeFormatInformation($maskedFormatInfo1, $maskedFormatInfo2)
@@ -149,7 +151,7 @@ final class FormatInformation
         $a ^= $b; // a now has a 1 bit exactly where its bit differs with b's
         // Count bits set quickly with a series of lookups:
         return self::$BITS_SET_IN_HALF_BYTE[$a & 0x0F] +
-            self::$BITS_SET_IN_HALF_BYTE[(int)(uRShift($a, 4) & 0x0F)] +
+            self::$BITS_SET_IN_HALF_BYTE[(int) (uRShift($a, 4) & 0x0F)] +
             self::$BITS_SET_IN_HALF_BYTE[(uRShift($a, 8) & 0x0F)] +
             self::$BITS_SET_IN_HALF_BYTE[(uRShift($a, 12) & 0x0F)] +
             self::$BITS_SET_IN_HALF_BYTE[(uRShift($a, 16) & 0x0F)] +
@@ -171,7 +173,7 @@ final class FormatInformation
     //@Override
     public function hashCode()
     {
-        return ($this->errorCorrectionLevel->ordinal() << 3) | (int)($this->dataMask);
+        return ($this->errorCorrectionLevel->ordinal() << 3) | (int) ($this->dataMask);
     }
 
     //@Override

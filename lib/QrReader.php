@@ -1,9 +1,9 @@
 <?php
 
-namespace Zxing;
+namespace ZxingSPE;
 
-use Zxing\Common\HybridBinarizer;
-use Zxing\Qrcode\QRCodeReader;
+use ZxingSPE\Common\HybridBinarizer;
+use ZxingSPE\Qrcode\QRCodeReader;
 
 final class QrReader
 {

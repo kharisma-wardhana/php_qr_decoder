@@ -15,9 +15,9 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace ZxingSPE;
 
-use Zxing\Common\BitMatrix;
+use ZxingSPE\Common\BitMatrix;
 
 /**
  * This class is the core bitmap class used by ZXing to represent 1 bit data. Reader objects

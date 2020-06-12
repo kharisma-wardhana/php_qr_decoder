@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
-use Zxing\ChecksumException;
-use Zxing\DecodeHintType;
-use Zxing\FormatException;
-use Zxing\Common\BitMatrix;
-use Zxing\Common\DecoderResult;
-use Zxing\Common\Reedsolomon\GenericGF;
-use Zxing\Common\Reedsolomon\ReedSolomonDecoder;
-use Zxing\Common\Reedsolomon\ReedSolomonException;
+use ZxingSPE\ChecksumException;
+use ZxingSPE\DecodeHintType;
+use ZxingSPE\FormatException;
+use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Common\DecoderResult;
+use ZxingSPE\Common\Reedsolomon\GenericGF;
+use ZxingSPE\Common\Reedsolomon\ReedSolomonDecoder;
+use ZxingSPE\Common\Reedsolomon\ReedSolomonException;
 
 /**
  * <p>The main class which implements QR Code decoding -- as opposed to locating and extracting
@@ -94,7 +94,7 @@ final class Decoder
     public function decodeBits($bits, $hints = null)
     {
 
-// Construct a parser and read version, error-correction level
+        // Construct a parser and read version, error-correction level
         $parser = new BitMatrixParser($bits);
         $fe     = null;
         $ce     = null;
@@ -135,8 +135,7 @@ final class Decoder
             $result->setOther(new QRCodeDecoderMetaData(true));
 
             return $result;
-
-        } catch (FormatException $e) {// catch (FormatException | ChecksumException e) {
+        } catch (FormatException $e) { // catch (FormatException | ChecksumException e) {
             // Throw the exception from the original reading
             if ($fe != null) {
                 throw $fe;
@@ -145,7 +144,6 @@ final class Decoder
                 throw $ce;
             }
             throw $e;
-
         }
     }
 
@@ -154,12 +152,12 @@ final class Decoder
         $version = $parser->readVersion();
         $ecLevel = $parser->readFormatInformation()->getErrorCorrectionLevel();
 
-// Read codewords
+        // Read codewords
         $codewords = $parser->readCodewords();
-// Separate into data blocks
+        // Separate into data blocks
         $dataBlocks = DataBlock::getDataBlocks($codewords, $version, $ecLevel);
 
-// Count total number of data bytes
+        // Count total number of data bytes
         $totalBytes = 0;
         foreach ($dataBlocks as $dataBlock) {
             $totalBytes += $dataBlock->getNumDataCodewords();
@@ -167,7 +165,7 @@ final class Decoder
         $resultBytes  = fill_array(0, $totalBytes, 0);
         $resultOffset = 0;
 
-// Error-correct and copy data blocks together into a stream of bytes
+        // Error-correct and copy data blocks together into a stream of bytes
         foreach ($dataBlocks as $dataBlock) {
             $codewordBytes    = $dataBlock->getCodewords();
             $numDataCodewords = $dataBlock->getNumDataCodewords();
@@ -177,7 +175,7 @@ final class Decoder
             }
         }
 
-// Decode the contents of that stream of bytes
+        // Decode the contents of that stream of bytes
         return DecodedBitStreamParser::decode($resultBytes, $version, $ecLevel, $hints);
     }
 
@@ -193,7 +191,7 @@ final class Decoder
     private function correctErrors(&$codewordBytes, $numDataCodewords)
     {
         $numCodewords = count($codewordBytes);
-// First read into an array of ints
+        // First read into an array of ints
         $codewordsInts = fill_array(0, $numCodewords, 0);
         for ($i = 0; $i < $numCodewords; $i++) {
             $codewordsInts[$i] = $codewordBytes[$i] & 0xFF;
@@ -204,8 +202,8 @@ final class Decoder
         } catch (ReedSolomonException $ignored) {
             throw ChecksumException::getChecksumInstance();
         }
-// Copy back into array of bytes -- only need to worry about the bytes that were data
-// We don't care about errors in the error-correction codewords
+        // Copy back into array of bytes -- only need to worry about the bytes that were data
+        // We don't care about errors in the error-correction codewords
         for ($i = 0; $i < $numDataCodewords; $i++) {
             $codewordBytes[$i] = $codewordsInts[$i];
         }

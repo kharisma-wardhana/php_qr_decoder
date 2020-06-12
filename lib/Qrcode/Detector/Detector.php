@@ -15,19 +15,19 @@
 * limitations under the License.
 */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
-use Zxing\DecodeHintType;
-use Zxing\FormatException;
-use Zxing\NotFoundException;
-use Zxing\ResultPoint;
-use Zxing\ResultPointCallback;
-use Zxing\Common\BitMatrix;
-use Zxing\Common\DetectorResult;
-use Zxing\Common\GridSampler;
-use Zxing\Common\PerspectiveTransform;
-use Zxing\Common\Detector\MathUtils;
-use Zxing\Qrcode\Decoder\Version;
+use ZxingSPE\DecodeHintType;
+use ZxingSPE\FormatException;
+use ZxingSPE\NotFoundException;
+use ZxingSPE\ResultPoint;
+use ZxingSPE\ResultPointCallback;
+use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Common\DetectorResult;
+use ZxingSPE\Common\GridSampler;
+use ZxingSPE\Common\PerspectiveTransform;
+use ZxingSPE\Common\Detector\MathUtils;
+use ZxingSPE\Qrcode\Decoder\Version;
 
 
 /**

@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * This class is used to help decode images from files which arrive as RGB data from
@@ -70,8 +70,8 @@ final class RGBLuminanceSource extends LuminanceSource
         $this->pixels     = $pixels;
 
 
-// In order to measure pure decoding speed, we convert the entire image to a greyscale array
-// up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
+        // In order to measure pure decoding speed, we convert the entire image to a greyscale array
+        // up front, which is the same as the Y channel of the YUVLuminanceSource in the real app.
         $this->luminances = [];
         //$this->luminances = $this->grayScaleToBitmap($this->grayscale());
 
@@ -97,14 +97,13 @@ final class RGBLuminanceSource extends LuminanceSource
             //$g = ($pixel >> 8) & 0xff;
             //$b = $pixel & 0xff;
             if ($r == $g && $g == $b) {
-// Image is already greyscale, so pick any channel.
+                // Image is already greyscale, so pick any channel.
 
-                $this->luminances[$key] = $r;//(($r + 128) % 256) - 128;
+                $this->luminances[$key] = $r; //(($r + 128) % 256) - 128;
             } else {
-// Calculate luminance cheaply, favoring green.
-                $this->luminances[$key] = ($r + 2 * $g + $b) / 4;//(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
+                // Calculate luminance cheaply, favoring green.
+                $this->luminances[$key] = ($r + 2 * $g + $b) / 4; //(((($r + 2 * $g + $b) / 4) + 128) % 256) - 128;
             }
-
         }
 
         /*
@@ -162,15 +161,14 @@ final class RGBLuminanceSource extends LuminanceSource
         }
         $point = ($x) + ($y * $width);
 
-        $r = $image[$point]['red'];//($image[$point] >> 16) & 0xff;
-        $g = $image[$point]['green'];//($image[$point] >> 8) & 0xff;
-        $b = $image[$point]['blue'];//$image[$point] & 0xff;
+        $r = $image[$point]['red']; //($image[$point] >> 16) & 0xff;
+        $g = $image[$point]['green']; //($image[$point] >> 8) & 0xff;
+        $b = $image[$point]['blue']; //$image[$point] & 0xff;
 
-        $p = (int)(($r * 33 + $g * 34 + $b * 33) / 100);
+        $p = (int) (($r * 33 + $g * 34 + $b * 33) / 100);
 
 
         return $p;
-
     }
 
     public function grayScaleToBitmap($grayScale)
@@ -185,7 +183,7 @@ final class RGBLuminanceSource extends LuminanceSource
             for ($ax = 0; $ax < $sqrtNumArea; $ax++) {
                 for ($dy = 0; $dy < $areaHeight; $dy++) {
                     for ($dx = 0; $dx < $areaWidth; $dx++) {
-                        $bitmap[(int)($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)] = ($grayScale[(int)($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)] < $middle[$ax][$ay]) ? 0 : 255;
+                        $bitmap[(int) ($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)] = ($grayScale[(int) ($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)] < $middle[$ax][$ay]) ? 0 : 255;
                     }
                 }
             }
@@ -212,7 +210,7 @@ final class RGBLuminanceSource extends LuminanceSource
                 $minmax[$ax][$ay][0] = 0xFF;
                 for ($dy = 0; $dy < $areaHeight; $dy++) {
                     for ($dx = 0; $dx < $areaWidth; $dx++) {
-                        $target = $image[(int)($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)];
+                        $target = $image[(int) ($areaWidth * $ax + $dx + ($areaHeight * $ay + $dy) * $this->dataWidth)];
                         if ($target < $minmax[$ax][$ay][0])
                             $minmax[$ax][$ay][0] = $target;
                         if ($target > $minmax[$ax][$ay][1])
@@ -239,7 +237,7 @@ final class RGBLuminanceSource extends LuminanceSource
         return $middle;
     }
 
-//@Override
+    //@Override
     public function getRow($y, $row = null)
     {
         if ($y < 0 || $y >= $this->getHeight()) {
@@ -255,14 +253,14 @@ final class RGBLuminanceSource extends LuminanceSource
         return $row;
     }
 
-//@Override
+    //@Override
     public function getMatrix()
     {
         $width  = $this->getWidth();
         $height = $this->getHeight();
 
-// If the caller asks for the entire underlying image, save the copy and give them the
-// original data. The docs specifically warn that result.length must be ignored.
+        // If the caller asks for the entire underlying image, save the copy and give them the
+        // original data. The docs specifically warn that result.length must be ignored.
         if ($width == $this->dataWidth && $height == $this->dataHeight) {
             return $this->luminances;
         }
@@ -271,14 +269,14 @@ final class RGBLuminanceSource extends LuminanceSource
         $matrix      = [];
         $inputOffset = $this->top * $this->dataWidth + $this->left;
 
-// If the width matches the full width of the underlying data, perform a single copy.
+        // If the width matches the full width of the underlying data, perform a single copy.
         if ($width == $this->dataWidth) {
             $matrix = arraycopy($this->luminances, $inputOffset, $matrix, 0, $area);
 
             return $matrix;
         }
 
-// Otherwise copy one cropped row at a time.
+        // Otherwise copy one cropped row at a time.
         $rgb = $this->luminances;
         for ($y = 0; $y < $height; $y++) {
             $outputOffset = $y * $width;
@@ -289,21 +287,23 @@ final class RGBLuminanceSource extends LuminanceSource
         return $matrix;
     }
 
-//@Override
+    //@Override
     public function isCropSupported()
     {
         return true;
     }
 
-//@Override
+    //@Override
     public function crop($left, $top, $width, $height)
     {
-        return new RGBLuminanceSource($this->luminances,
+        return new RGBLuminanceSource(
+            $this->luminances,
             $this->dataWidth,
             $this->dataHeight,
             $this->left + $left,
             $this->top + $top,
             $width,
-            $height);
+            $height
+        );
     }
 }

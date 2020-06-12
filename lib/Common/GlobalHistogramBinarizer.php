@@ -15,11 +15,11 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
-use Zxing\Binarizer;
-use Zxing\LuminanceSource;
-use Zxing\NotFoundException;
+use ZxingSPE\Binarizer;
+use ZxingSPE\LuminanceSource;
+use ZxingSPE\NotFoundException;
 
 /**
  * This Binarizer implementation uses the old ZXing global histogram approach. It is suitable
@@ -173,11 +173,11 @@ class GlobalHistogramBinarizer extends Binarizer
         $this->initArrays($width);
         $localBuckets = $this->buckets;
         for ($y = 1; $y < 5; $y++) {
-            $row             = (int)($height * $y / 5);
+            $row             = (int) ($height * $y / 5);
             $localLuminances = $source->getRow($row, $this->luminances);
-            $right           = (int)(($width * 4) / 5);
-            for ($x = (int)($width / 5); $x < $right; $x++) {
-                $pixel = ($localLuminances[(int)($x)] & 0xff);
+            $right           = (int) (($width * 4) / 5);
+            for ($x = (int) ($width / 5); $x < $right; $x++) {
+                $pixel = ($localLuminances[(int) ($x)] & 0xff);
                 $localBuckets[($pixel >> self::$LUMINANCE_SHIFT)]++;
             }
         }
@@ -190,7 +190,7 @@ class GlobalHistogramBinarizer extends Binarizer
         for ($y = 0; $y < $height; $y++) {
             $offset = $y * $width;
             for ($x = 0; $x < $width; $x++) {
-                $pixel = (int)($localLuminances[$offset + $x] & 0xff);
+                $pixel = (int) ($localLuminances[$offset + $x] & 0xff);
                 if ($pixel < $blackPoint) {
                     $matrix->set($x, $y);
                 }

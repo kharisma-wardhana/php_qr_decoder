@@ -15,9 +15,9 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
-use Zxing\NotFoundException;
+use ZxingSPE\NotFoundException;
 
 /**
  * Implementations of this class can, given locations of finder patterns for a QR code in an
@@ -84,11 +84,11 @@ abstract class GridSampler
     ) {
         $width  = $image->getWidth();
         $height = $image->getHeight();
-// Check and nudge points from start until we see some that are OK:
+        // Check and nudge points from start until we see some that are OK:
         $nudged = true;
         for ($offset = 0; $offset < count($points) && $nudged; $offset += 2) {
-            $x = (int)$points[$offset];
-            $y = (int)$points[$offset + 1];
+            $x = (int) $points[$offset];
+            $y = (int) $points[$offset + 1];
             if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
                 throw NotFoundException::getNotFoundInstance();
             }
@@ -108,11 +108,11 @@ abstract class GridSampler
                 $nudged              = true;
             }
         }
-// Check and nudge points from end:
+        // Check and nudge points from end:
         $nudged = true;
         for ($offset = count($points) - 2; $offset >= 0 && $nudged; $offset -= 2) {
-            $x = (int)$points[$offset];
-            $y = (int)$points[$offset + 1];
+            $x = (int) $points[$offset];
+            $y = (int) $points[$offset + 1];
             if ($x < -1 || $x > $width || $y < -1 || $y > $height) {
                 throw NotFoundException::getNotFoundInstance();
             }
@@ -168,14 +168,22 @@ abstract class GridSampler
         $image,
         $dimensionX,
         $dimensionY,
-        $p1ToX, $p1ToY,
-        $p2ToX, $p2ToY,
-        $p3ToX, $p3ToY,
-        $p4ToX, $p4ToY,
-        $p1FromX, $p1FromY,
-        $p2FromX, $p2FromY,
-        $p3FromX, $p3FromY,
-        $p4FromX, $p4FromY
+        $p1ToX,
+        $p1ToY,
+        $p2ToX,
+        $p2ToY,
+        $p3ToX,
+        $p3ToY,
+        $p4ToX,
+        $p4ToY,
+        $p1FromX,
+        $p1FromY,
+        $p2FromX,
+        $p2FromY,
+        $p3FromX,
+        $p3FromY,
+        $p4FromX,
+        $p4FromY
     );
 
     public abstract function sampleGrid_(
@@ -184,5 +192,4 @@ abstract class GridSampler
         $dimensionY,
         $transform
     );
-
 }

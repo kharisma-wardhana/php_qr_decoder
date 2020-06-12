@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Detector;
+namespace ZxingSPE\Qrcode\Detector;
 
-use Zxing\ResultPoint;
+use ZxingSPE\ResultPoint;
 
 /**
  * <p>Encapsulates an alignment pattern, which are the smaller square patterns found in

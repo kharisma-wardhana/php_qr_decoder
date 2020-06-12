@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Ashot
@@ -6,9 +7,9 @@
  * Time: 21:23
  */
 
-namespace Zxing\Common\Detector;
+namespace ZxingSPE\Common\Detector;
 
-use Zxing\BinaryBitmap;
+use ZxingSPE\BinaryBitmap;
 use \Zxing\NotFoundException;
 use \Zxing\ResultPoint;
 
@@ -41,7 +42,6 @@ class MonochromeRectangleDetector
     public function __construct(BinaryBitmap $image)
     {
         $this->image = $image;
-
     }
 
     /**
@@ -70,25 +70,69 @@ class MonochromeRectangleDetector
         $bottom = $height;
         $left   = 0;
         $right  = $width;
-        $pointA = $this->findCornerFromCenter($halfWidth, 0, $left, $right,
-            $halfHeight, -$deltaY, $top, $bottom, $halfWidth / 2);
-        $top    = (int)$pointA->getY() - 1;
-        $pointB = $this->findCornerFromCenter($halfWidth, -$deltaX, $left, $right,
-            $halfHeight, 0, $top, $bottom, $halfHeight / 2);
-        $left   = (int)$pointB->getX() - 1;
-        $pointC = $this->findCornerFromCenter($halfWidth, $deltaX, $left, $right,
-            $halfHeight, 0, $top, $bottom, $halfHeight / 2);
-        $right  = (int)$pointC->getX() + 1;
-        $pointD = $this->findCornerFromCenter($halfWidth, 0, $left, $right,
-            $halfHeight, $deltaY, $top, $bottom, $halfWidth / 2);
-        $bottom = (int)$pointD->getY() + 1;
+        $pointA = $this->findCornerFromCenter(
+            $halfWidth,
+            0,
+            $left,
+            $right,
+            $halfHeight,
+            -$deltaY,
+            $top,
+            $bottom,
+            $halfWidth / 2
+        );
+        $top    = (int) $pointA->getY() - 1;
+        $pointB = $this->findCornerFromCenter(
+            $halfWidth,
+            -$deltaX,
+            $left,
+            $right,
+            $halfHeight,
+            0,
+            $top,
+            $bottom,
+            $halfHeight / 2
+        );
+        $left   = (int) $pointB->getX() - 1;
+        $pointC = $this->findCornerFromCenter(
+            $halfWidth,
+            $deltaX,
+            $left,
+            $right,
+            $halfHeight,
+            0,
+            $top,
+            $bottom,
+            $halfHeight / 2
+        );
+        $right  = (int) $pointC->getX() + 1;
+        $pointD = $this->findCornerFromCenter(
+            $halfWidth,
+            0,
+            $left,
+            $right,
+            $halfHeight,
+            $deltaY,
+            $top,
+            $bottom,
+            $halfWidth / 2
+        );
+        $bottom = (int) $pointD->getY() + 1;
 
         // Go try to find po$A again with better information -- might have been off at first.
-        $pointA = $this->findCornerFromCenter($halfWidth, 0, $left, $right,
-            $halfHeight, -$deltaY, $top, $bottom, $halfWidth / 4);
+        $pointA = $this->findCornerFromCenter(
+            $halfWidth,
+            0,
+            $left,
+            $right,
+            $halfHeight,
+            -$deltaY,
+            $top,
+            $bottom,
+            $halfWidth / 4
+        );
 
         return new ResultPoint($pointA, $pointB, $pointC, $pointD);
-
     }
 
 
@@ -111,20 +155,23 @@ class MonochromeRectangleDetector
      * @return ResultPoint $a {@link com.google.zxing.ResultPoint} encapsulating the corner that was found
      * @throws NotFoundException if such a point cannot be found
      */
-    private function findCornerFromCenter($centerX,
-                                          $deltaX,
-                                          $left,
-                                          $right,
-                                          $centerY,
-                                          $deltaY,
-                                          $top,
-                                          $bottom,
-                                          $maxWhiteRun)
-    {
+    private function findCornerFromCenter(
+        $centerX,
+        $deltaX,
+        $left,
+        $right,
+        $centerY,
+        $deltaY,
+        $top,
+        $bottom,
+        $maxWhiteRun
+    ) {
         $lastRange = null;
-        for ($y = $centerY, $x = $centerX;
-             $y < $bottom && $y >= $top && $x < $right && $x >= $left;
-             $y += $deltaY, $x += $deltaX) {
+        for (
+            $y = $centerY, $x = $centerX;
+            $y < $bottom && $y >= $top && $x < $right && $x >= $left;
+            $y += $deltaY, $x += $deltaX
+        ) {
             $range = 0;
             if ($deltaX == 0) {
                 // horizontal slices, up and down

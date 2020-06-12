@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 /**
  * <p>This class implements a perspective transform in two dimensions. Given four source and four
@@ -37,9 +37,15 @@ final class PerspectiveTransform
     private $a33;
 
     private function __construct(
-        $a11, $a21, $a31,
-        $a12, $a22, $a32,
-        $a13, $a23, $a33
+        $a11,
+        $a21,
+        $a31,
+        $a12,
+        $a22,
+        $a32,
+        $a13,
+        $a23,
+        $a33
     ) {
         $this->a11 = $a11;
         $this->a12 = $a12;
@@ -53,14 +59,22 @@ final class PerspectiveTransform
     }
 
     public static function quadrilateralToQuadrilateral(
-        $x0, $y0,
-        $x1, $y1,
-        $x2, $y2,
-        $x3, $y3,
-        $x0p, $y0p,
-        $x1p, $y1p,
-        $x2p, $y2p,
-        $x3p, $y3p
+        $x0,
+        $y0,
+        $x1,
+        $y1,
+        $x2,
+        $y2,
+        $x3,
+        $y3,
+        $x0p,
+        $y0p,
+        $x1p,
+        $y1p,
+        $x2p,
+        $y2p,
+        $x3p,
+        $y3p
     ) {
 
         $qToS = self::quadrilateralToSquare($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3);
@@ -70,19 +84,24 @@ final class PerspectiveTransform
     }
 
     public static function quadrilateralToSquare(
-        $x0, $y0,
-        $x1, $y1,
-        $x2, $y2,
-        $x3, $y3
+        $x0,
+        $y0,
+        $x1,
+        $y1,
+        $x2,
+        $y2,
+        $x3,
+        $y3
     ) {
-// Here, the adjoint serves as the inverse:
+        // Here, the adjoint serves as the inverse:
         return self::squareToQuadrilateral($x0, $y0, $x1, $y1, $x2, $y2, $x3, $y3)->buildAdjoint();
     }
 
     public function buildAdjoint()
     {
-// Adjoint is the transpose of the cofactor matrix:
-        return new PerspectiveTransform($this->a22 * $this->a33 - $this->a23 * $this->a32,
+        // Adjoint is the transpose of the cofactor matrix:
+        return new PerspectiveTransform(
+            $this->a22 * $this->a33 - $this->a23 * $this->a32,
             $this->a23 * $this->a31 - $this->a21 * $this->a33,
             $this->a21 * $this->a32 - $this->a22 * $this->a31,
             $this->a13 * $this->a32 - $this->a12 * $this->a33,
@@ -90,22 +109,35 @@ final class PerspectiveTransform
             $this->a12 * $this->a31 - $this->a11 * $this->a32,
             $this->a12 * $this->a23 - $this->a13 * $this->a22,
             $this->a13 * $this->a21 - $this->a11 * $this->a23,
-            $this->a11 * $this->a22 - $this->a12 * $this->a21);
+            $this->a11 * $this->a22 - $this->a12 * $this->a21
+        );
     }
 
     public static function squareToQuadrilateral(
-        $x0, $y0,
-        $x1, $y1,
-        $x2, $y2,
-        $x3, $y3
+        $x0,
+        $y0,
+        $x1,
+        $y1,
+        $x2,
+        $y2,
+        $x3,
+        $y3
     ) {
         $dx3 = $x0 - $x1 + $x2 - $x3;
         $dy3 = $y0 - $y1 + $y2 - $y3;
         if ($dx3 == 0.0 && $dy3 == 0.0) {
-// Affine
-            return new PerspectiveTransform($x1 - $x0, $x2 - $x1, $x0,
-                $y1 - $y0, $y2 - $y1, $y0,
-                0.0, 0.0, 1.0);
+            // Affine
+            return new PerspectiveTransform(
+                $x1 - $x0,
+                $x2 - $x1,
+                $x0,
+                $y1 - $y0,
+                $y2 - $y1,
+                $y0,
+                0.0,
+                0.0,
+                1.0
+            );
         } else {
             $dx1         = $x1 - $x2;
             $dx2         = $x3 - $x2;
@@ -114,20 +146,29 @@ final class PerspectiveTransform
             $denominator = $dx1 * $dy2 - $dx2 * $dy1;
             $a13         = ($dx3 * $dy2 - $dx2 * $dy3) / $denominator;
             $a23         = ($dx1 * $dy3 - $dx3 * $dy1) / $denominator;
-			
-			if ((int)$denominator === 0) {
-				throw new \Exception('Cannot divide by 0, reduce error correction level and try again');
-			}
-			
-            return new PerspectiveTransform($x1 - $x0 + $a13 * $x1, $x3 - $x0 + $a23 * $x3, $x0,
-                $y1 - $y0 + $a13 * $y1, $y3 - $y0 + $a23 * $y3, $y0,
-                $a13, $a23, 1.0);
+
+            if ((int) $denominator === 0) {
+                throw new \Exception('Cannot divide by 0, reduce error correction level and try again');
+            }
+
+            return new PerspectiveTransform(
+                $x1 - $x0 + $a13 * $x1,
+                $x3 - $x0 + $a23 * $x3,
+                $x0,
+                $y1 - $y0 + $a13 * $y1,
+                $y3 - $y0 + $a23 * $y3,
+                $y0,
+                $a13,
+                $a23,
+                1.0
+            );
         }
     }
 
     public function times($other)
     {
-        return new PerspectiveTransform($this->a11 * $other->a11 + $this->a21 * $other->a12 + $this->a31 * $other->a13,
+        return new PerspectiveTransform(
+            $this->a11 * $other->a11 + $this->a21 * $other->a12 + $this->a31 * $other->a13,
             $this->a11 * $other->a21 + $this->a21 * $other->a22 + $this->a31 * $other->a23,
             $this->a11 * $other->a31 + $this->a21 * $other->a32 + $this->a31 * $other->a33,
             $this->a12 * $other->a11 + $this->a22 * $other->a12 + $this->a32 * $other->a13,
@@ -135,8 +176,8 @@ final class PerspectiveTransform
             $this->a12 * $other->a31 + $this->a22 * $other->a32 + $this->a32 * $other->a33,
             $this->a13 * $other->a11 + $this->a23 * $other->a12 + $this->a33 * $other->a13,
             $this->a13 * $other->a21 + $this->a23 * $other->a22 + $this->a33 * $other->a23,
-            $this->a13 * $other->a31 + $this->a23 * $other->a32 + $this->a33 * $other->a33);
-
+            $this->a13 * $other->a31 + $this->a23 * $other->a32 + $this->a33 * $other->a33
+        );
     }
 
     public function transformPoints(&$points, &$yValues = 0)

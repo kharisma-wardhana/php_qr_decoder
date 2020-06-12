@@ -1,6 +1,6 @@
 <?php
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 use \Zxing\NotFoundException;
 use ReflectionClass;
@@ -99,6 +99,6 @@ final class AbstractEnum
      */
     public function __toString()
     {
-        return (string)array_search($this->value, $this->getConstList());
+        return (string) array_search($this->value, $this->getConstList());
     }
 }

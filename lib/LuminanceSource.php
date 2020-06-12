@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * The purpose of this class hierarchy is to abstract different bitmap implementations across

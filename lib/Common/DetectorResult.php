@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing\Common;
+namespace ZxingSPE\Common;
 
 /**
  * <p>Encapsulates the result of detecting a barcode in an image. This includes the raw

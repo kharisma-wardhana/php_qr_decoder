@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
-use Zxing\FormatException;
-use Zxing\Common\BitMatrix;
+use ZxingSPE\FormatException;
+use ZxingSPE\Common\BitMatrix;
 
 /**
  * @author Sean Owen

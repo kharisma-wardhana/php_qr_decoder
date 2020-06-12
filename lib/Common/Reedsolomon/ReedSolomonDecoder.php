@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Common\Reedsolomon;
+namespace ZxingSPE\Common\Reedsolomon;
 
 /**
  * <p>Implements Reed-Solomon decoding, as the name implies.</p>
@@ -89,7 +89,6 @@ final class ReedSolomonDecoder
             }
             $received[$position] = GenericGF::addOrSubtract($received[$position], $errorMagnitudes[$i]);
         }
-
     }
 
     private function runEuclideanAlgorithm($a, $b, $R)
@@ -189,8 +188,10 @@ final class ReedSolomonDecoder
                     $denominator = $this->field->multiply($denominator, $termPlus1);
                 }
             }
-            $result[$i] = $this->field->multiply($errorEvaluator->evaluateAt($xiInverse),
-                $this->field->inverse($denominator));
+            $result[$i] = $this->field->multiply(
+                $errorEvaluator->evaluateAt($xiInverse),
+                $this->field->inverse($denominator)
+            );
             if ($this->field->getGeneratorBase() != 0) {
                 $result[$i] = $this->field->multiply($result[$i], $xiInverse);
             }

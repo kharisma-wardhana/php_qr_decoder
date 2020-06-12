@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Zxing\Qrcode\Decoder;
+namespace ZxingSPE\Qrcode\Decoder;
 
 /**
  * <p>Encapsulates a block of data within a QR Code. QR Codes may split their data into
@@ -47,10 +47,11 @@ final class DataBlock
      * @return array DataBlocks containing original bytes, "de-interleaved" from representation in the
      *         QR Code
      */
-    public static function getDataBlocks($rawCodewords,
-                                         $version,
-                                         $ecLevel)
-    {
+    public static function getDataBlocks(
+        $rawCodewords,
+        $version,
+        $ecLevel
+    ) {
 
         if (count($rawCodewords) != $version->getTotalCodewords()) {
             throw new \InvalidArgumentException();
@@ -68,7 +69,7 @@ final class DataBlock
         }
 
         // Now establish DataBlocks of the appropriate size and number of data codewords
-        $result          = [];//new DataBlock[$totalBlocks];
+        $result          = []; //new DataBlock[$totalBlocks];
         $numResultBlocks = 0;
         foreach ($ecBlockArray as $ecBlock) {
             $ecBlockCount = $ecBlock->getCount();

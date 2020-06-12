@@ -15,7 +15,7 @@
 * limitations under the License.
 */
 
-namespace Zxing;
+namespace ZxingSPE;
 
 /**
  * Thrown when a barcode was successfully detected, but some aspect of
