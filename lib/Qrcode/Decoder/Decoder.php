@@ -17,14 +17,12 @@
 
 namespace ZxingSPE\Qrcode\Decoder;
 
-use ZxingSPE\ChecksumException;
-use ZxingSPE\DecodeHintType;
-use ZxingSPE\FormatException;
 use ZxingSPE\Common\BitMatrix;
-use ZxingSPE\Common\DecoderResult;
 use ZxingSPE\Common\Reedsolomon\GenericGF;
 use ZxingSPE\Common\Reedsolomon\ReedSolomonDecoder;
 use ZxingSPE\Common\Reedsolomon\ReedSolomonException;
+use ZxingSPE\Exceptions\ChecksumException;
+use ZxingSPE\Exceptions\FormatException;
 
 /**
  * <p>The main class which implements QR Code decoding -- as opposed to locating and extracting

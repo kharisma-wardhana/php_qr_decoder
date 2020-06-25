@@ -17,7 +17,7 @@
 
 namespace ZxingSPE\Common;
 
-use ZxingSPE\NotFoundException;
+use ZxingSPE\Exceptions\NotFoundException;
 
 /**
  * @author Sean Owen

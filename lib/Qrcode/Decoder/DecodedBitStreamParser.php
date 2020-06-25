@@ -18,12 +18,11 @@
 namespace ZxingSPE\Qrcode\Decoder;
 
 use ZxingSPE\DecodeHintType;
-use ZxingSPE\FormatException;
 use ZxingSPE\Common\BitSource;
 use ZxingSPE\Common\CharacterSetECI;
 use ZxingSPE\Common\DecoderResult;
 use ZxingSPE\Common\StringUtils;
-
+use ZxingSPE\Exceptions\FormatException;
 
 /**
  * <p>QR Codes can encode text as bits in one of several modes, and can use multiple modes

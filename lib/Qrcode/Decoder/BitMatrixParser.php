@@ -17,8 +17,8 @@
 
 namespace ZxingSPE\Qrcode\Decoder;
 
-use ZxingSPE\FormatException;
 use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Exceptions\FormatException;
 
 /**
  * @author Sean Owen

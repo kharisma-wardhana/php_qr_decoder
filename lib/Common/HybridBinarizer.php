@@ -18,8 +18,6 @@
 namespace ZxingSPE\Common;
 
 use ZxingSPE\Binarizer;
-use ZxingSPE\LuminanceSource;
-use ZxingSPE\NotFoundException;
 
 /**
  * This class implements a local thresholding algorithm, which while slower than the

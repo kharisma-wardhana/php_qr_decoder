@@ -2,7 +2,6 @@
 
 namespace ZxingSPE\Common;
 
-use \Zxing\NotFoundException;
 use ReflectionClass;
 
 /**

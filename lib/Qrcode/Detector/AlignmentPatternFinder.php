@@ -17,9 +17,9 @@
 
 namespace ZxingSPE\Qrcode\Detector;
 
-use ZxingSPE\NotFoundException;
 use ZxingSPE\ResultPointCallback;
 use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Exceptions\NotFoundException;
 
 /**
  * <p>This class attempts to find alignment patterns in a QR Code. Alignment patterns look like finder

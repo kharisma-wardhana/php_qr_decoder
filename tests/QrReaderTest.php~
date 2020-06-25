@@ -1,6 +1,6 @@
 <?php
 
-namespace Khanamiryan\QrCodeTests;
+namespace ZxingSPE\QrCodeTests;
 
 use ZxingSPE\QrReader;
 

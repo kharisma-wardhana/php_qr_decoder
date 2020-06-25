@@ -18,8 +18,7 @@
 namespace ZxingSPE\Common;
 
 use ZxingSPE\Binarizer;
-use ZxingSPE\LuminanceSource;
-use ZxingSPE\NotFoundException;
+use ZxingSPE\Exceptions\NotFoundException;
 
 /**
  * This Binarizer implementation uses the old ZXing global histogram approach. It is suitable

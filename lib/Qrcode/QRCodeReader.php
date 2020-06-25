@@ -18,12 +18,12 @@
 namespace ZxingSPE\Qrcode;
 
 use ZxingSPE\BinaryBitmap;
-use ZxingSPE\ChecksumException;
-use ZxingSPE\FormatException;
-use ZxingSPE\NotFoundException;
 use ZxingSPE\Reader;
 use ZxingSPE\Result;
 use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Exceptions\ChecksumException;
+use ZxingSPE\Exceptions\FormatException;
+use ZxingSPE\Exceptions\NotFoundException;
 use ZxingSPE\Qrcode\Decoder\Decoder;
 use ZxingSPE\Qrcode\Detector\Detector;
 

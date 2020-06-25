@@ -18,6 +18,7 @@
 namespace ZxingSPE;
 
 use ZxingSPE\Common\BitMatrix;
+use ZxingSPE\Exceptions\NotFoundException;
 
 /**
  * This class is the core bitmap class used by ZXing to represent 1 bit data. Reader objects

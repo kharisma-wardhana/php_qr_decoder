@@ -17,7 +17,7 @@
 
 namespace ZxingSPE\Common;
 
-use ZxingSPE\NotFoundException;
+use ZxingSPE\Exceptions\NotFoundException;
 
 /**
  * Implementations of this class can, given locations of finder patterns for a QR code in an

@@ -19,7 +19,7 @@ namespace ZxingSPE\Qrcode\Detector;
 
 use ZxingSPE\BinaryBitmap;
 use ZxingSPE\Common\BitMatrix;
-use ZxingSPE\NotFoundException;
+use ZxingSPE\Exceptions\NotFoundException;
 use ZxingSPE\ResultPoint;
 
 /**
@@ -616,7 +616,7 @@ class FinderPatternFinder
         $startSize = count($this->possibleCenters);
         if ($startSize < 3) {
             // Couldn't find enough finder patterns
-            throw new NotFoundException;
+            throw new NotFoundException();
         }
 
         // Filter outlier possibilities whose module size is too different

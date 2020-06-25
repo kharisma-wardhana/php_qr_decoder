@@ -10,8 +10,8 @@
 namespace ZxingSPE\Common\Detector;
 
 use ZxingSPE\BinaryBitmap;
-use \Zxing\NotFoundException;
-use \Zxing\ResultPoint;
+use ZxingSPE\Exceptions\NotFoundException;
+use ZxingSPE\ResultPoint;
 
 /*
  *

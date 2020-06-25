@@ -18,8 +18,6 @@
 namespace ZxingSPE\Qrcode\Detector;
 
 use ZxingSPE\DecodeHintType;
-use ZxingSPE\FormatException;
-use ZxingSPE\NotFoundException;
 use ZxingSPE\ResultPoint;
 use ZxingSPE\ResultPointCallback;
 use ZxingSPE\Common\BitMatrix;
@@ -27,6 +25,7 @@ use ZxingSPE\Common\DetectorResult;
 use ZxingSPE\Common\GridSampler;
 use ZxingSPE\Common\PerspectiveTransform;
 use ZxingSPE\Common\Detector\MathUtils;
+use ZxingSPE\Exceptions\NotFoundException;
 use ZxingSPE\Qrcode\Decoder\Version;
 
 
@@ -81,7 +80,7 @@ class Detector
             throw NotFoundException::getNotFoundInstance();
         }
         $dimension               = (int) self::computeDimension($topLeft, $topRight, $bottomLeft, $moduleSize);
-        $provisionalVersion      = \Zxing\Qrcode\Decoder\Version::getProvisionalVersionForDimension($dimension);
+        $provisionalVersion      = Version::getProvisionalVersionForDimension($dimension);
         $modulesBetweenFPCenters = $provisionalVersion->getDimensionForVersion() - 7;
 
         $alignmentPattern = null;
