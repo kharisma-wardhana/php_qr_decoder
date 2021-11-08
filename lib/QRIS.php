@@ -6,8 +6,8 @@ use ZxingSPE\QrReader;
 
 final class QRIS
 {
-    public static const MERCHANT_INFO_DOMESTIC = 2;
-    public static const MERCHANT_INFO_CENTRAL = 3;
+    public const MERCHANT_INFO_DOMESTIC = 2;
+    public const MERCHANT_INFO_CENTRAL = 3;
 
     public $response = array();
 
