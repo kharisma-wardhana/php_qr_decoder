@@ -2,95 +2,194 @@
 
 namespace ZxingSPE;
 
-use Exception;
 use ZxingSPE\QrReader;
 
 final class QRIS
 {
+    public static const MERCHANT_INFO_DOMESTIC = 2;
+    public static const MERCHANT_INFO_CENTRAL = 3;
+
     public $response = array();
 
-    public function checkQR($filepath)
+    public function parsingQRISFile($filepath)
     {
         $qrcode = new QrReader($filepath, QrReader::SOURCE_TYPE_FILE);
         try {
-            $this->response['success'] = false;
-            $this->response['message'] = 'failed upload QRIS';
-            //return decoded text from QR Code
+            // return decoded text from QR Code File
             $data_qr = $qrcode->text();
-            if ($data_qr) {
-                $this->response['success'] = false;
-                $this->response['message'] = 'NMID not found';
-                if ($data = $this->decodeQRIS($data_qr)) {
-                    $this->response['success'] = true;
-                    $this->response['message'] = 'success QRIS data';
-                    $this->response['data'] = $data;
-                }
+
+            // check if the text is a valid qris value
+            $validQRIS = $this->isQRISValid($data_qr);
+
+            if (!$validQRIS) {
+                throw new \Exception("Invalid QRIS");
             }
-        } catch (Exception $err) {
+
+            // decode qris text to get data nmid 
+            $dataQRIS = $this->parsingRootId($data_qr);
+            $this->parsingMerchantInfo($dataQRIS);
+            $merchantInfoDomestic = $dataQRIS[self::MERCHANT_INFO_DOMESTIC];
+            $merchantInfoCentral = $dataQRIS[self::MERCHANT_INFO_CENTRAL];
+            $mid = $merchantInfoDomestic->getData()->getMid();
+            $nmid = $merchantInfoCentral->getData()->getMid();
+            $mpan = $merchantInfoDomestic->getData()->getMpan();
+
+            $this->response['success'] = true;
+            $this->response['message'] = 'Success Get QRIS data';
+            $this->response['data'] = [
+                'mid' => $mid,
+                'nmid' => $nmid,
+                'mpan' => $mpan
+            ];
+        } catch (\Exception $err) {
             $this->response['success'] = false;
             $this->response['message'] = $err->getMessage() ?: 'Unable to catch error message';
         }
         return $this->response;
     }
 
-    public function decodeQRIS($data_qr)
+    public function parsingQRIS($data_qr)
     {
-        //======
-        // uncomment this to check full qr data
-        // var_dump($data_qr);
-        //======
+        try {
+            $validQRIS = $this->isQRISValid($data_qr);
 
-        // constant length value
-        $tag_len = 2; // example (tag 51 that indicate merchant_account_info)
-        $tag_data = 4; // example (tag 51 44 XXXXXX that 44 indicate length value data)
+            if (!$validQRIS) {
+                throw new \Exception("Invalid QRIS");
+            }
 
-        $fisrt_tag = substr($data_qr, 0, $tag_len);
+            $dataQRIS = $this->parsingRootId($data_qr);
+            $this->parsingMerchantInfo($dataQRIS);
+            $merchantInfoDomestic = $dataQRIS[self::MERCHANT_INFO_DOMESTIC];
+            $merchantInfoCentral = $dataQRIS[self::MERCHANT_INFO_CENTRAL];
+            $mid = $merchantInfoDomestic->getData()->getMid();
+            $nmid = $merchantInfoCentral->getData()->getMid();
+            $mpan = $merchantInfoDomestic->getData()->getMpan();
 
-        // use (-8) cause crc usually has 4 char + 4 tag data (63 04 XXXX)
-        $last_tag = substr($data_qr, -8, $tag_len);
-
-        //check format qris tag and crc tag
-        if ($fisrt_tag != '00' || $last_tag != '63') {
+            $this->response['success'] = true;
+            $this->response['message'] = 'Success Get QRIS data';
+            $this->response['data'] = [
+                'mid' => $mid,
+                'nmid' => $nmid,
+                'mpan' => $mpan
+            ];
+        } catch (\Exception $ex) {
             $this->response['success'] = false;
-            $this->response['message'] = 'Not QRIS';
-            return false;
+            $this->response['message'] = $ex->getMessage() ?: 'Unable to catch error message';
         }
+    }
 
-        $merchant_accInfo = '';
-        $data_nmid = '';
+    private function isQRISValid($qrdata)
+    {
+        //checsum 4 digit ascii
+        if ($qrdata != NULL && strlen($qrdata) > 4) {
+            $qrDataNonCRC = substr($qrdata, 0, strlen($qrdata) - 4 - 0);
+            $qrCRC = strtoupper(substr($qrdata, strlen($qrdata) - 4));
+            $byte_array = unpack('C*', $qrDataNonCRC);
+            $checkCRC = strtoupper($this->checkCRC($byte_array));
 
-        //looping to check outer qris tag 
-        for ($tag = 0; $tag < strlen($data_qr); $tag++) {
-            $tag_id = substr($data_qr, 0, $tag_len);
-            $tag_info = substr($data_qr, 0, $tag_data);
-            $data_len = substr($tag_info, $tag_len);
-            $decode_data = substr($data_qr, $tag_data, (int) $data_len);
-
-            if ($tag_id == '51') {
-                $merchant_accInfo = $decode_data;
-                //break this loop cause we only need to check NMID in tag 51
-                break;
+            if (
+                substr($qrDataNonCRC, 0, strlen("00")) == "00"
+                && strtolower($qrCRC) == strtolower($checkCRC)
+            ) {
+                return true;
             }
-
-            $data_qr = substr($data_qr, ($tag_data + (int) $data_len));
-            // var_dump($data_qr);
         }
+        return false;
+    }
 
-        //looping to check data in merchant_account_info tag
-        for ($tag = 0; $tag < strlen($merchant_accInfo); $tag++) {
-            $tag_sub_id = substr($merchant_accInfo, 0, $tag_len);
-            $tag_info = substr($merchant_accInfo, 0, $tag_data);
-            $data_len = substr($tag_info, $tag_len);
-            $decode_data = substr($merchant_accInfo, $tag_data, (int) $data_len);
-            // var_dump($decode_data);
-            if ($tag_sub_id == '02') {
-                $data_nmid = $decode_data;
-                //break this loop cause we only need data in tag 51 XX 02 
-                break;
+    private function checkCRC($bytes)
+    {
+        $crc = 0xFFFF;
+        $polynomial = 0x1021;
+        $sCRC = "";
+        foreach ($bytes as $b) {
+            for ($i = 0; $i < 8; $i++) {
+                $bit = (($b >> (7 - $i) & 1) == 1);
+                $c15 = (($crc >> 15 & 1) == 1);
+                $crc <<= 1;
+                if ($c15 ^ $bit) {
+                    $crc ^= $polynomial;
+                }
             }
-            $merchant_accInfo = substr($merchant_accInfo, ($tag_data + (int) $data_len));
         }
-        // var_dump($data_nmid);
-        return $data_nmid;
+        $crc &= 0xFFFF;
+        $sCRC = sprintf("%04x", $crc);
+        return $sCRC;
+    }
+
+    private function parsingRootId($payload)
+    {
+        $listSegment = array();
+        for ($tag = 0; $tag < 100; $tag++) {
+            $rootId = sprintf("%02d", $tag);
+            try {
+                // check if payload string start with root id
+                if (substr($payload, 0, strlen($rootId)) == $rootId) {
+                    $payload = substr($payload, 2);
+                    $data_len = substr($payload, 0, 2);
+
+                    $payload = substr($payload, 2);
+
+                    $data = substr($payload, 0, $data_len);
+                    $field = $this->getFieldName(QRISTag::$QRISFieldName, $rootId);
+
+                    $segment = new QRISSegment($rootId, $field, $data_len, $data);
+                    array_push($listSegment, $segment);
+
+                    $payload = substr($payload, $data_len);
+                }
+            } catch (\Exception $ex) {
+                throw new \Exception("Error parsing QRIS " . $ex->getMessage());
+            }
+        }
+        return $listSegment;
+    }
+
+    private function getFieldName($fieldName, $rootId)
+    {
+        foreach ($fieldName as $key => $value) {
+            if ($key == $rootId) {
+                return $value;
+            }
+        }
+        return "";
+    }
+
+    private function parsingMerchantInfo($payload)
+    {
+        // looping payload to get merchant info
+        foreach ($payload as $segment) {
+            $srootId = (int) $segment->getRootId();
+            if ($srootId >= 2 && $srootId <= 51) {
+                $payload = $segment->getData();
+                $segment->setData($this->getMerchantInfo($payload));
+            }
+        }
+    }
+
+    private function getMerchantInfo($payload)
+    {
+        $merchantInfo = new QRISMerchantInfo();
+        for ($tag = 0; $tag <= 3; $tag++) {
+            $srootId = sprintf("%02d", $tag);
+            if (substr($payload, 0, strlen($srootId)) == $srootId) {
+                $payload = substr($payload, 2);
+                $data_len = substr($payload, 0, 2);
+                $payload = substr($payload, 2);
+                $data = substr($payload, 0, $data_len);
+                if ($tag == 0) {
+                    $merchantInfo->setGlobalId($data);
+                } else if ($tag == 1) {
+                    $merchantInfo->setMPAN($data);
+                } else if ($tag == 2) {
+                    $merchantInfo->setMid($data);
+                } else if ($tag == 3) {
+                    $merchantInfo->setMCriteria($data);
+                }
+
+                $payload = substr($payload, $data_len);
+            }
+        }
+        return $merchantInfo;
     }
 }
